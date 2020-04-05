@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "616959269968",
+    "firebase_url": "https://fir-classification.firebaseio.com",
+    "project_id": "fir-classification",
+    "storage_bucket": "fir-classification.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616959269968:android:728e1c0d790ee552564555",
+        "android_client_info": {
+          "package_name": "com.example.game"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "616959269968-h7kg62g8g4oer3u6tbide1sucsbf7dh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvOrQf1dFVcJYXAYgun58PP8Nf4gfw06w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "616959269968-h7kg62g8g4oer3u6tbide1sucsbf7dh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616959269968:android:527c09082d55b498564555",
+        "android_client_info": {
+          "package_name": "com.naturescavenger.odyssee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "616959269968-h7kg62g8g4oer3u6tbide1sucsbf7dh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvOrQf1dFVcJYXAYgun58PP8Nf4gfw06w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "616959269968-h7kg62g8g4oer3u6tbide1sucsbf7dh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:616959269968:android:03933cdd38f8096e564555",
+        "android_client_info": {
+          "package_name": "com.scavenger.odysee"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "616959269968-h7kg62g8g4oer3u6tbide1sucsbf7dh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvOrQf1dFVcJYXAYgun58PP8Nf4gfw06w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "616959269968-h7kg62g8g4oer3u6tbide1sucsbf7dh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
