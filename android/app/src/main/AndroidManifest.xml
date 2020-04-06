@@ -9,6 +9,9 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="odyssee"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBRosId447e-b4c4wUZXMsHqXCME6_1xK0"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -27,4 +30,6 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <uses-permission android:name="android.permisssion.ACCESS_FINE_LOCATION"></uses-permission>
+    <uses-permission android:name="android.permisssion.ACCESS_COARSE_LOCATION"></uses-permission>
 </manifest>
