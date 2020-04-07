@@ -1,7 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:odyssee/mocks/hunt_data.dart';
+import 'package:odyssee/models/hunt_item.dart';
 import 'package:odyssee/models/user.dart';
+import 'package:odyssee/screens/classification/hunt_screen.dart';
 import 'package:odyssee/services/database.dart';
 
 class ClassificationHelpers {
@@ -9,9 +11,14 @@ class ClassificationHelpers {
   
   
   void confirmClassification(BuildContext context, User user, recogntions, String predictedClass, bool findStatus, File image) {
-    var predictions = recogntions.map((res) => res["label"]).toList();
-    findStatus = predictions.contains(predictedClass);
-    showAlertDialog(context, user, predictedClass, image, findStatus);
+    var predictions = recogntions.map((res) => res["label"].toLowerCase()).toList();
+    findStatus = predictions.contains(predictedClass.toLowerCase());
+    Map huntMapItem = HuntData.huntMap[predictedClass];
+    HuntItem huntItem = HuntItem(
+                                huntName: huntMapItem['HuntName'], description: huntMapItem['Description'], 
+                                hint: huntMapItem['Hints']);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => HuntScreen(huntItem : huntItem)));
+    //showAlertDialog(context, user, predictedClass, image, findStatus);
   }
   
 
