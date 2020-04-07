@@ -23,21 +23,28 @@ class _FeedState extends State<Feed> {
     return StreamProvider<List<Post>>.value(
       value: DatabaseService(uid: user.uid).posts,
       child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Styles.appBarStyle,
+          appBar: new AppBar(
+            backgroundColor: Color(0xFF194000),
             elevation: 0.0,
-            title: Text('Feed'),
-            actions: <Widget>[
-              FlatButton.icon(
-                onPressed: () async => AuthService().signOut(), 
-                icon: Icon(Icons.person, color: Colors.white,), 
-                label: Text(
-                  'Logout',
-                  style: TextStyle(color: Colors.white)
-                )
-              )
-            ],
+            iconTheme: IconThemeData(
+              color: Color(0xFFE86935),
+            ),
           ),
+//          appBar: AppBar(
+//            backgroundColor: Styles.appBarStyle,
+//            elevation: 0.0,
+//            title: Text('Feed'),
+//            actions: <Widget>[
+//              FlatButton.icon(
+//                onPressed: () async => AuthService().signOut(),
+//                icon: Icon(Icons.person, color: Colors.white,),
+//                label: Text(
+//                  'Logout',
+//                  style: TextStyle(color: Colors.white)
+//                )
+//              )
+//            ],
+//          ),
 
           body: Container(
             padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),

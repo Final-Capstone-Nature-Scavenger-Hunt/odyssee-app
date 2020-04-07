@@ -25,7 +25,7 @@ class StartMenu extends StatelessWidget {                     //modified
                 );
               },
             ),
-            backgroundColor: Colors.transparent,
+            backgroundColor: Color(0xFF194000),
             elevation: 0.0,
             iconTheme: IconThemeData(
               color: Color(0xFFE86935),
@@ -152,13 +152,18 @@ class StartMenu extends StatelessWidget {                     //modified
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage("assets/icons/icon_odyssee_orange.png"),
-                      ),
+                  Opacity(
+                    opacity: 0.85,
+                    child: Image.asset(
+                      "assets/icons/icon_odyssee_detailed.png",
+                      scale: 1.55,
                     ),
                   ),
+//                  Text('ODYSSEE',
+//                    style: new TextStyle(
+//                        color: Color(0xEF59B547)
+//                    ),
+//                  ),
                   MaterialButton(
                     height: 75,
                     minWidth: 300,
@@ -170,7 +175,12 @@ class StartMenu extends StatelessWidget {                     //modified
                     },
                     color: Color(0xEF194000),
                     textColor: Color(0xFFE5D9A5),
-                    child: Text('PLAY!'),
+                    child: new Text('PLAY!',
+                      style: new TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20.0
+                      ),
+                    ),
                   ),
                   MaterialButton(
                     height: 50,

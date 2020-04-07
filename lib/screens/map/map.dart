@@ -4,14 +4,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:odyssee/screens/start/start_menu.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:gpx/gpx.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:xml/xml.dart' as xml;
 import 'package:location/location.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:odyssee/screens/achievements/achievements.dart';
 import 'package:odyssee/screens/authenticate/authenticate.dart';
 import 'package:odyssee/screens/social/feed.dart';
-import 'package:odyssee/screens/map/map.dart';
-
+import 'package:odyssee/screens/classification/classification.dart';
+import 'package:odyssee/screens/map/route_list.dart';
 
 class Map extends StatefulWidget {
   @override
@@ -21,12 +21,12 @@ class Map extends StatefulWidget {
 class _MapState extends State<Map> {
   File _image;
 
-  Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
-    setState(() {
-      _image = image;
-    });
-  }
+//  Future getImage() async {
+//    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+//    setState(() {
+//      _image = image;
+//    });
+//  }
 
   GoogleMapController mapController;
   final LatLng _center = const LatLng(37.8662, -119.5422);
@@ -89,20 +89,7 @@ class _MapState extends State<Map> {
                 );
               },
             ),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.map,
-                  color: Color(0xFFE86935),
-                ),
-                onPressed: () {
-//                  xml =
-//                  var trail = GpxReader().fromString(xml)
-                },
-                tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-              )
-            ],
-            backgroundColor: Colors.transparent,
+            backgroundColor: Color(0xFF194000),
             elevation: 0.0,
             iconTheme: IconThemeData(
               color: Color(0xFFE86935),
@@ -241,15 +228,81 @@ class _MapState extends State<Map> {
             ),
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: FloatingActionButton(
-            elevation: 5.0,
-            foregroundColor: Color(0xFFE5D9A5),
-            backgroundColor: Color(0xEF59B547),
-            child: new Icon(Icons.camera_alt, size: 50.0,),
-            onPressed: getImage,
+          floatingActionButton: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                PopupMenuButton<String>(
+                  offset: Offset(100, 100),
+                  icon: Icon(Icons.map),
+                  onSelected: (result) {
+                    String filepath = "assets/gpx" + result;
+                    print(filepath);
+                    final document = xml.parse(filepath);
+                    print(document.toString());
+                    final titles = document.findAllElements('title');
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: "bridalveil-falls-trail",
+                      child: Text(
+                          "Bridalveil Falls Trail",
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: "cooks-meadow-loop",
+                      child: Text(
+                        "Cooks Meadow Loop",
+                      ),
+                    ),
+                  ],
+                ),
+                FloatingActionButton(
+                  elevation: 5.0,
+                  foregroundColor: Color(0xFFE5D9A5),
+                  backgroundColor: Color(0xEF194000),
+                  child: new Icon(Icons.camera_alt, size: 45.0,),
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ClassifyImage())),
+                ),
+                PopupMenuButton<int>(
+                  offset: Offset(100, 100),
+                  icon: Icon(Icons.art_track),
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 1,
+                      child: Text(
+                        "Flutter Open",
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 2,
+                      child: Text(
+                        "Flutter Tutorial",
+                      ),
+                    ),
+                  ],
+                ),
+//                FloatingActionButton(
+//                  elevation: 5.0,
+//                  foregroundColor: Color(0xFFE5D9A5),
+//                  backgroundColor: Color(0xEF194000),
+//                  mini: true,
+//                  child: new Icon(Icons.art_track, size: 25.0,),
+//                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ClassifyImage())),
+                ],
+              ),
+            ),
           ),
+
+//          FloatingActionButton(
+//            elevation: 5.0,
+//            foregroundColor: Color(0xFFE5D9A5),
+//            backgroundColor: Color(0xEF194000),
+//            child: new Icon(Icons.camera_alt, size: 45.0,),
+//            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ClassifyImage())),
+//          ),
         ),
-      ),
-    );
+      );
   }
 }
