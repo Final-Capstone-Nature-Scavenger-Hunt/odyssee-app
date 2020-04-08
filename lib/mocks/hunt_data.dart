@@ -1,7 +1,9 @@
 class HuntData {
 
 
-  static final Map huntMap = {'American Aspen': {'Description': 'American\xa0aspen\xa0has a long history of '
+  static final Map huntMap = {
+    'American Aspen': 
+    {'Description': 'American\xa0aspen\xa0has a long history of '
                                     'herbal\xa0use. It was widely employed '
                                     'medicinally by many native North American '
                                     'Indian tribes who valued it especially for '

@@ -13,12 +13,16 @@ class ClassificationHelpers {
   void confirmClassification(BuildContext context, User user, recogntions, String predictedClass, bool findStatus, File image) {
     var predictions = recogntions.map((res) => res["label"].toLowerCase()).toList();
     findStatus = predictions.contains(predictedClass.toLowerCase());
-    Map huntMapItem = HuntData.huntMap[predictedClass];
-    HuntItem huntItem = HuntItem(
+
+    if (findStatus){
+      Map huntMapItem = HuntData.huntMap[predictedClass];
+      HuntItem huntItem = HuntItem(
                                 huntName: huntMapItem['HuntName'], description: huntMapItem['Description'], 
                                 hint: huntMapItem['Hints']);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => HuntScreen(huntItem : huntItem)));
-    //showAlertDialog(context, user, predictedClass, image, findStatus);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HuntScreen(huntItem : huntItem)));
+    } else {
+      showAlertDialog(context, user, predictedClass, image, findStatus);
+    }
   }
   
 
@@ -42,7 +46,7 @@ class ClassificationHelpers {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Confirm Finding"),
+        title: Text("Please try again"),
         content: Text(dialogContent),
         actions: <Widget>[ findStatus ? postButton: null , okButton],
         elevation: 24.0,

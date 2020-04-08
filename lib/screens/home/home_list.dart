@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:odyssee/screens/classification/classification.dart';
+import 'package:odyssee/screens/map/map.dart';
 import 'package:odyssee/screens/social/feed.dart';
 import 'package:odyssee/screens/social/users_to_follow.dart';
 import 'package:odyssee/shared/styles.dart';
@@ -28,7 +29,7 @@ class HomeView extends StatelessWidget {
               children: <Widget>[
                 InkWell(
                     child: Container(
-                      child: Text( "Play",
+                      child: Text( "Map",
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20.0),
@@ -39,7 +40,7 @@ class HomeView extends StatelessWidget {
                       alignment: Alignment.center,
 
                      ),
-                    onTap: () =>  print("Clicked on Play"),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => GameMap()))
                     
                 ),
                 InkWell(
