@@ -39,3 +39,6 @@ lib/generated_plugin_registrant.dart
 
 # AndroidManifest
 **/AndroidManifest.xml
+
+# Firebase credentials
+**/google-services.json
