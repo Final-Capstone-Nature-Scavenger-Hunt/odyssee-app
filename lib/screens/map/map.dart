@@ -118,4 +118,3 @@ class _GameMapState extends State<GameMap> {
     );
   }
 }
->>>>>>> master
