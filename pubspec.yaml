@@ -1,5 +1,5 @@
 name: odyssee
-description: A new Flutter project.
+description: Odyssee Application
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -19,6 +19,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  splashscreen:
+  google_maps_flutter: 0.5.24+1 
+  flutter_svg: ^0.12.1
+  path_provider:
+  path:
+  gpx: ^0.0.1
+  flutter_polyline_points: ^0.1.0
+  location: ^2.3.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -58,6 +66,9 @@ flutter:
    - assets/models/odyssee/model_v2.tflite
    - assets/models/odyssee/labels_imagenet_slim.txt
    - assets/nature.jpg
+   - assets/icons/
+   - assets/images/
+   - assets/gpx/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
