@@ -198,6 +198,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.24+1"
+<<<<<<< HEAD
   gpx:
     dependency: "direct main"
     description:
@@ -205,6 +206,8 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.3"
+=======
+>>>>>>> master
   http:
     dependency: transitive
     description:
@@ -428,5 +431,9 @@ packages:
     source: hosted
     version: "3.5.0"
 sdks:
+<<<<<<< HEAD
   dart: ">=2.7.0 <3.0.0"
+=======
+  dart: ">=2.7.0-dev <3.0.0"
+>>>>>>> master
   flutter: ">=1.12.13+hotfix.5 <2.0.0"
