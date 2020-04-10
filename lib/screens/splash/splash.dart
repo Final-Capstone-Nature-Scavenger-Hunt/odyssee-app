@@ -10,9 +10,10 @@ class Splash extends StatelessWidget{
         navigateAfterSeconds: new Wrapper(),
         title: new Text('ODYSSEE',
           style: new TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20.0,
-              color: Color(0xEF59B547)
+            fontFamily: 'Kiri',
+            fontWeight: FontWeight.bold,
+            fontSize: 20.0,
+//            color: Color(0xEF59B547)
           ),
         ),
         image: new Image.asset('assets/icons/icon_odyssee_detailed.png'),

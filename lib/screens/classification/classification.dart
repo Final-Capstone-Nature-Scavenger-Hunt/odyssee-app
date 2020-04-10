@@ -8,7 +8,7 @@ import 'package:odyssee/screens/classification/classification_helpers.dart';
 import 'package:odyssee/shared/styles.dart';
 import 'package:provider/provider.dart';
 import 'package:odyssee/models/user.dart';
-
+import 'package:odyssee/shared/header_nav.dart';
 import 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -174,11 +174,11 @@ class _ClassifyImageState extends State<ClassifyImage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
+      appBar: BaseAppBar(
         title: Text('Classify Image'),
-        backgroundColor: Styles.appBarStyle,
-        elevation : 0.0,
+        appBar: AppBar(),
       ),
+      drawer: BaseDrawer(),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
         child: Stack(
