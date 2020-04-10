@@ -35,3 +35,10 @@ lib/generated_plugin_registrant.dart
 
 # Exceptions to above rules.
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+
+
+# AndroidManifest
+# **/AndroidManifest.xml
+
+# Firebase credentials
+**/google-services.json

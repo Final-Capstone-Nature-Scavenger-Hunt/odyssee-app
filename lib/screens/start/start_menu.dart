@@ -170,7 +170,7 @@ class StartMenu extends StatelessWidget {                     //modified
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => Map()),
+                        MaterialPageRoute(builder: (context) => GameMap()),
                       );
                     },
                     color: Color(0xEF194000),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:odyssee/mocks/hunt_data.dart';
 import 'package:odyssee/screens/classification/classification_helpers.dart';
 import 'package:odyssee/shared/styles.dart';
 import 'package:provider/provider.dart';
@@ -117,17 +118,21 @@ class _ClassifyImageState extends State<ClassifyImage> {
     List<Widget> stackChildren = [];
 
     final user = Provider.of<User>(context);
+    final huntNames = HuntData.huntMap.keys.toList();
 
     List<Widget> belowImageWidgets = [
-      TextFormField(
-                          decoration: Styles.textInputDecoration.copyWith(hintText: 'Enter Your Predicted Value Here'),
-                          validator: (val) => val.isEmpty ? 'Please enter a value here' : null,
-                          onChanged:(val){
-                            setState(() => predictedClass = val);
-                          },
-                          initialValue: predictedClass,
-                          
-                        ),
+
+      DropdownButtonFormField(
+        value: predictedClass ?? huntNames[0],
+        items: huntNames.map((huntName) => 
+        DropdownMenuItem(
+          child: Text(huntName),
+          value: huntName,
+        )
+        ).toList(),
+        onChanged: (val) => setState(() => predictedClass = val),
+        ),
+
       FlatButton(
         child: Text('Confirm Image'),
         onPressed: () =>  ClassificationHelpers().confirmClassification(context, user, _recognitions, 

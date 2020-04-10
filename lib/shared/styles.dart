@@ -2,6 +2,15 @@ import 'package:flutter/material.dart';
 
 class Styles {
 
+  static final Color _textColorStrong = _hexToColor('000000');
+  static final Color _textColorDefault = _hexToColor('666666');
+  static final String _fontNameDefault = 'Muli';
+
+  
+  static Color _hexToColor( String code ) {
+    return Color(int.parse(code.substring(0, 6), radix : 16) );
+  }
+
   static const textInputDecoration =  InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
@@ -31,4 +40,11 @@ class Styles {
       );
 
   static dynamic appBarStyle = Colors.green[700];
+
+
+  static final headerLarge = TextStyle(
+    fontFamily: _fontNameDefault,
+    fontSize: 25.0,
+    color: _textColorStrong,
+  );
 }

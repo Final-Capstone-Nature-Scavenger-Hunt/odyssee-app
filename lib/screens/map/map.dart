@@ -1,40 +1,29 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:odyssee/screens/start/start_menu.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:gpx/gpx.dart';
-import 'package:xml/xml.dart' as xml;
 import 'package:location/location.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:odyssee/screens/achievements/achievements.dart';
 import 'package:odyssee/screens/authenticate/authenticate.dart';
 import 'package:odyssee/screens/social/feed.dart';
 import 'package:odyssee/screens/classification/classification.dart';
-import 'package:odyssee/screens/map/route_list.dart';
+import 'package:odyssee/models/line.dart';
+import 'package:odyssee/data/trails.dart';
 
-class Map extends StatefulWidget {
+class GameMap extends StatefulWidget {
   @override
-  _MapState createState() => _MapState();
+  _GameMapState createState() => _GameMapState();
 }
 
-class _MapState extends State<Map> {
-  File _image;
-
-//  Future getImage() async {
-//    var image = await ImagePicker.pickImage(source: ImageSource.camera);
-//    setState(() {
-//      _image = image;
-//    });
-//  }
-
+class _GameMapState extends State<GameMap> {
   GoogleMapController mapController;
+
   final LatLng _center = const LatLng(37.8662, -119.5422);
 
   Set<Marker> _markers = {};
-  Set<Polyline> _polylines = {};
-  List<LatLng> polylineCoordinates = [];
-  PolylinePoints polylinePoints = PolylinePoints();
+  final Set<Polyline> _polyline = {};
+  String _trailName = 'Cooks Meadow Loop';
+  List<LatLng> polylinePoints = List();
 
   Icon locationIcon = Icon(Icons.directions_walk);
   Icon sourceIcon = Icon(Icons.trip_origin);
@@ -45,36 +34,67 @@ class _MapState extends State<Map> {
   Location location;
 
   void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
-  }
-  @override
-  void initState() {
-    super.initState();
 
-    // create an instance of Location
-    location = new Location();
-    polylinePoints = PolylinePoints();
+    polylinePoints = Line(_trailName).points();
 
-    // subscribe to changes in the user's location
-    // by "listening" to the location's onLocationChanged event
-    location.onLocationChanged().listen((LocationData cLoc) {
-      // cLoc contains the lat and long of the
-      // current user's position in real time,
-      // so we're holding on to it
-      currentLocation = cLoc;
+    setState(() {
+      mapController = controller;
+
+      _polyline.add(Polyline(
+              polylineId: PolylineId('line1'),
+              visible: true,
+              points: polylinePoints,
+              width: 5,
+              color: Colors.blue,
+          ));    
     });
-    // set the initial location
-    setInitialLocation();
+
+    // pan to the new position of the trail
+    CameraPosition cPosition = CameraPosition(
+      zoom: 16.0,
+      target: polylinePoints[0],
+      );
+
+      mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+
   }
 
-  void setInitialLocation() async {
-    // set the initial location by pulling the user's
-    // current location from the location's getLocation()
-    currentLocation = await location.getLocation();
+  void _onChangeTrail(String trailName, GoogleMapController controller){
+    
+    print('Updating the trail');
+    
+    setState(() {
+      _trailName = trailName;
+      print('New trailname $_trailName');
+
+      polylinePoints = Line(_trailName).points();
+      mapController = controller;
+
+      _polyline.add(Polyline(
+        polylineId: PolylineId('line1'),
+        visible: true,
+        points: polylinePoints,
+        width: 5,
+        color: Colors.blue,
+      ));  
+
+    }); 
+    
+     // pan to the new position of the trail
+     CameraPosition cPosition = CameraPosition(
+      zoom: 16.0,
+      target: polylinePoints[0],
+      );
+
+      mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
   }
 
   @override
   Widget build(BuildContext context) {
+    print('PolyLine');
+    print(_polyline);
+    print(_trailName);
+
     return MaterialApp(
       home: Container(
         child: Scaffold(
@@ -210,15 +230,16 @@ class _MapState extends State<Map> {
               ],
             ),
           ),
-          body: new GoogleMap(
+          body: GoogleMap(
+	    polylines: _polyline,
             myLocationEnabled: true,
             compassEnabled: true,
             tiltGesturesEnabled: false,
             mapType: MapType.normal,
             onMapCreated: _onMapCreated,
             initialCameraPosition: CameraPosition(
-              target: _center,
-              zoom: 10.0,
+              target: polylinePoints.isEmpty ? _center : polylinePoints[0],
+              zoom: polylinePoints.isEmpty ? 11.0 : 18.0,
             ),
 //            minMaxZoomPreference: new MinMaxZoomPreference(1, 11),
             cameraTargetBounds: new CameraTargetBounds(new LatLngBounds(
@@ -233,30 +254,17 @@ class _MapState extends State<Map> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                PopupMenuButton<String>(
+                PopupMenuButton(
                   offset: Offset(100, 100),
                   icon: Icon(Icons.map),
-                  onSelected: (result) {
-                    String filepath = "assets/gpx" + result;
-                    print(filepath);
-                    final document = xml.parse(filepath);
-                    print(document.toString());
-                    final titles = document.findAllElements('title');
-                  },
-                  itemBuilder: (context) => [
+                  initialValue: 'Select a Trail',
+                  onSelected: (val) { _onChangeTrail(val, mapController);} ,
+                  itemBuilder: (context) => TrailData.trailMap.keys.map((trail) =>
                     PopupMenuItem(
-                      value: "bridalveil-falls-trail",
-                      child: Text(
-                          "Bridalveil Falls Trail",
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: "cooks-meadow-loop",
-                      child: Text(
-                        "Cooks Meadow Loop",
-                      ),
-                    ),
-                  ],
+                      value: trail,
+                      child: Text(trail)
+                      )
+                    ).toList(),
                 ),
                 FloatingActionButton(
                   elevation: 5.0,
