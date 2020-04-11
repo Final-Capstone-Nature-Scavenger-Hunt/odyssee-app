@@ -24,9 +24,9 @@ class Styles {
 
   static final dynamic authBackgroundDecoration = BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/nature.jpg'),
+          image: AssetImage('assets/images/main_background.jpg'),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.green[400].withOpacity(0.8), BlendMode.srcOver)
+          colorFilter: ColorFilter.mode(Color(0xFF194000).withOpacity(0.6), BlendMode.srcOver)
           )
       );
 

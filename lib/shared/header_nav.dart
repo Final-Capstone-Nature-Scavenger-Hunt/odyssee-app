@@ -12,7 +12,6 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget{
   const BaseAppBar({Key key, this.title, this.appBar})
       : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -45,7 +44,7 @@ class BaseDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       elevation: 15.0,
-      child: Container(color: Color(0xDD194000),
+      child: Container(color: Color(0xAF615F5F),//Color(0xDD194000),
         child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -177,8 +176,8 @@ class BaseDrawer extends StatelessWidget {
               },
             ),
           ),
-        ],
-      ),
+          ],
+        ),
       ),
     );
   }

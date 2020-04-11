@@ -73,3 +73,9 @@ flutter:
     - family: Kiri
       fonts:
         - asset: fonts/KiriFont.ttf
+    - family: Orkney
+      fonts:
+        - asset: fonts/Orkney Regular.ttf
+    - family: BOTW
+      fonts:
+        - asset: fonts/BOTW.ttf

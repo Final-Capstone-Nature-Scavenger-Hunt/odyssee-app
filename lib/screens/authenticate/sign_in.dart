@@ -3,7 +3,6 @@ import 'package:odyssee/services/auth.dart';
 import 'package:odyssee/shared/loading.dart';
 import 'package:odyssee/shared/styles.dart';
 
-
 class SignIn extends StatefulWidget {
 
   final Function toggleView;
@@ -26,22 +25,24 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() : Scaffold(
-        
         body: Container(
           padding: EdgeInsets.symmetric(vertical: 40.0, horizontal:50.0),
           decoration: Styles.authBackgroundDecoration,
-
           child: Form(
             key: _formkey,
             child: Column(
               children: <Widget>[
-                Text("ODYSSEE",
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 80, 0, 0),
+                  child: Text("ODYSSEE",
                   style: TextStyle(
                   fontSize: 50.0,
-                  color: Colors.brown,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.bold,
+                  fontFamily: 'BOTW',
+                  color: Color(0xFFE5D9A5),
+//                  fontStyle: FontStyle.italic,
+//                  fontWeight: FontWeight.bold,
                   ),
+                 ),
                 ),
                 Expanded(child: SizedBox(height: 20.0)),
 
@@ -67,7 +68,7 @@ class _SignInState extends State<SignIn> {
                 Expanded(child: SizedBox(height: 20.0)),
 
                 RaisedButton(
-                  color: Colors.teal[300], 
+                  color: Color(0xEF615F5F),
                   child: Text(
                     'Log In',
                     style: TextStyle(color : Colors.white)
@@ -98,7 +99,7 @@ class _SignInState extends State<SignIn> {
                 SizedBox(height: 10.0),
 
                 RaisedButton(
-                  color: Colors.teal[300],
+                  color: Color(0xEF615F5F),
                   child: Text(
                     'Create An Account',
                     style: TextStyle(color: Colors.white)

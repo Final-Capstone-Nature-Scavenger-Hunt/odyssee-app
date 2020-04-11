@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:odyssee/models/line.dart';
@@ -68,6 +69,13 @@ class _GameMapState extends State<GameMap> {
     });
     // set the initial location
     setInitialLocation();
+
+    CameraPosition cPosition = CameraPosition(
+      zoom: 16.0,
+      target: polylinePoints[0],
+    );
+
+    mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
   }
 
   void setInitialLocation() async {

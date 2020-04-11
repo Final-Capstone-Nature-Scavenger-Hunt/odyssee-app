@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:odyssee/shared/header_nav.dart';
 import 'package:odyssee/screens/map/map.dart';
+import 'package:odyssee/shared/styles.dart';
 
 class StartMenu extends StatelessWidget {                     //modified
   @override                                                        //new
   Widget build (BuildContext context) {
     return MaterialApp(
       home: Container(
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage("assets/images/main_background.jpg"), fit: BoxFit.fitHeight)),
+        decoration: Styles.authBackgroundDecoration,
         child: Scaffold(
           backgroundColor: Colors.transparent,
           appBar: BaseAppBar(
-            title: Text('ODYSSEE'),
+            title: Text('Main Menu'),
             appBar: AppBar(),
           ),
           drawer: BaseDrawer(),
@@ -24,10 +23,10 @@ class StartMenu extends StatelessWidget {                     //modified
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Opacity(
-                    opacity: 0.85,
+                    opacity: 1,
                     child: Image.asset(
                       "assets/icons/icon_odyssee_detailed.png",
-                      scale: 1.55,
+                      scale: 1.7,
                     ),
                   ),
 //                  Text('ODYSSEE',
@@ -35,6 +34,24 @@ class StartMenu extends StatelessWidget {                     //modified
 //                        color: Color(0xEF59B547)
 //                    ),
 //                  ),
+                  Container(
+//                    padding: EdgeInsets.fromLTRB(0, 0, 0, 55),
+                    child: Text('ODYSSEE',
+                      style: new TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'BOTW',
+  //            fontWeight: FontWeight.bold,
+                        fontSize: 45.0,
+  //            color: Color(0xEF59B547)
+                      ),
+                    ),
+                  ),
+                  Divider(
+                    color: Color(0xFFE86935),
+                    indent: 30,
+                    endIndent: 30,
+                    thickness: 2,
+                  ),
                   MaterialButton(
                     height: 75,
                     minWidth: 300,
@@ -44,8 +61,8 @@ class StartMenu extends StatelessWidget {                     //modified
                         MaterialPageRoute(builder: (context) => GameMap()),
                       );
                     },
-                    color: Color(0xEF194000),
-                    textColor: Color(0xFFE5D9A5),
+                    color: Color(0xFF59B547),
+                    textColor: Colors.white,
                     child: new Text('PLAY!',
                       style: new TextStyle(
                         fontWeight: FontWeight.bold,

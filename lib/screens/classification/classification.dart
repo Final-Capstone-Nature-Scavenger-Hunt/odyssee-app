@@ -141,8 +141,6 @@ class _ClassifyImageState extends State<ClassifyImage> {
         )
     ];
 
-
- 
     stackChildren.add(Center(
       child: Column(
         children: [
@@ -174,11 +172,24 @@ class _ClassifyImageState extends State<ClassifyImage> {
     }
 
     return Scaffold(
-      appBar: BaseAppBar(
-        title: Text('Classify Image'),
-        appBar: AppBar(),
+      appBar: AppBar(
+//        leading: Builder(
+//          builder: (BuildContext context) {
+//            return IconButton(
+//              icon: const Icon(Icons.menu),
+//              onPressed: () { Scaffold.of(context).openDrawer(); },
+//              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
+//            );
+//          },
+//        ),
+        title: Text('Image Classification'),
+        centerTitle: true,
+        backgroundColor: Color(0xFF194000),
+        elevation: 0.0,
+        iconTheme: IconThemeData(
+          color: Color(0xFFE86935),
+        ),
       ),
-      drawer: BaseDrawer(),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
         child: Stack(
