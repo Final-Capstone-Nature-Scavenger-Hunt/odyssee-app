@@ -8,11 +8,12 @@ class Splash extends StatelessWidget{
     return new SplashScreen(
         seconds: 8,
         navigateAfterSeconds: new Wrapper(),
-        title: new Text('ODYSSEE',
+        title: Text('ODYSSEE',
           style: new TextStyle(
-            fontFamily: 'Kiri',
-            fontWeight: FontWeight.bold,
-            fontSize: 20.0,
+            color: Colors.white,
+            fontFamily: 'BOTW',
+//            fontWeight: FontWeight.bold,
+            fontSize: 50.0,
 //            color: Color(0xEF59B547)
           ),
         ),

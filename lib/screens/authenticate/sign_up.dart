@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:odyssee/screens/authenticate/sign_in.dart';
 import 'package:odyssee/services/auth.dart';
 import 'package:odyssee/shared/loading.dart';
 import 'package:odyssee/shared/styles.dart';
@@ -26,20 +27,25 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return loading ? Loading() : Scaffold(
-      appBar: AppBar(
-        backgroundColor: Styles.appBarStyle,
-        elevation : 0.0,
-        title: Text('Create an Account on odyssee'),
-      ),
-    
     body: Container(
       padding: EdgeInsets.symmetric(vertical: 20.0, horizontal:50.0),
       decoration: Styles.authBackgroundDecoration,
-
       child: Form(
         key: _formkey,
         child: Column(
           children: <Widget>[
+            Container(
+              padding: EdgeInsets.fromLTRB(0, 80, 0, 0),
+              child: Text("ODYSSEE",
+                style: TextStyle(
+                  fontSize: 50.0,
+                  fontFamily: 'BOTW',
+                  color: Color(0xFFE5D9A5),
+//                  fontStyle: FontStyle.italic,
+//                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
             SizedBox(height: 30.0),
             TextFormField(
                 decoration: Styles.textInputDecoration.copyWith(hintText: 'Email'),
@@ -73,7 +79,7 @@ class _SignUpState extends State<SignUp> {
             SizedBox(height: 20.0),
 
             RaisedButton(
-              color: Colors.teal[300], 
+              color: Color(0xEF615F5F),
               child: Text(
                 'Sign Up',
                 style: TextStyle(color : Colors.white)
@@ -107,7 +113,7 @@ class _SignUpState extends State<SignUp> {
             SizedBox(height: 10.0),
 
             RaisedButton(
-              color: Colors.teal[300],
+              color: Color(0xEF615F5F),
               child: Text(
                 'Sign Into Your Account',
                 style: TextStyle(color: Colors.white)
