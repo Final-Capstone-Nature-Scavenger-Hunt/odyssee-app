@@ -8,7 +8,7 @@ class Splash extends StatelessWidget{
     return new SplashScreen(
         seconds: 8,
         navigateAfterSeconds: new Wrapper(),
-        title: new Text('ODYSSEE',
+        title: Text('ODYSSEE',
           style: new TextStyle(
             color: Colors.white,
             fontFamily: 'BOTW',

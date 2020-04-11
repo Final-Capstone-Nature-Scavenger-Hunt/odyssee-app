@@ -44,7 +44,7 @@ class BaseDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       elevation: 15.0,
-      child: Container(color: Color(0xAF615F5F),//Color(0xDD194000),
+      child: Container(color: Color(0xDD194000),
         child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -72,6 +72,14 @@ class BaseDrawer extends StatelessWidget {
             ),
           ),
           Container(
+            decoration: const BoxDecoration(
+              border: Border(
+//                top: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                left: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                right: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+                bottom: BorderSide(width: 1.0, color: Color(0xFFE86935)),
+              ),
+            ),
             child: ListTile(
               leading: Icon(
                   Icons.group,
@@ -93,6 +101,14 @@ class BaseDrawer extends StatelessWidget {
             ),
           ),
           Container(
+            decoration: const BoxDecoration(
+              border: Border(
+//                top: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                left: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                right: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+                bottom: BorderSide(width: 1.0, color: Color(0xFFE86935)),
+              ),
+            ),
             child: ListTile(
               leading: Icon(
                   Icons.collections,
@@ -114,6 +130,14 @@ class BaseDrawer extends StatelessWidget {
             ),
           ),
           Container(
+            decoration: const BoxDecoration(
+              border: Border(
+//                top: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                left: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                right: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+                bottom: BorderSide(width: 1.0, color: Color(0xFFE86935)),
+              ),
+            ),
             child: ListTile(
               leading: Icon(
                   Icons.flag,
@@ -135,6 +159,14 @@ class BaseDrawer extends StatelessWidget {
             ),
           ),
           Container(
+            decoration: const BoxDecoration(
+              border: Border(
+//                top: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                left: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                right: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+                bottom: BorderSide(width: 1.0, color: Color(0xFFE86935)),
+              ),
+            ),
             child: ListTile(
               leading: Icon(
                   Icons.arrow_back,
@@ -156,6 +188,14 @@ class BaseDrawer extends StatelessWidget {
             ),
           ),
           Container(
+            decoration: const BoxDecoration(
+              border: Border(
+//                top: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                left: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                right: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+                bottom: BorderSide(width: 1.0, color: Color(0xFFE86935)),
+              ),
+            ),
             child: ListTile(
               leading: Icon(
                   Icons.account_circle,

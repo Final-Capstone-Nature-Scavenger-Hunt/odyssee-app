@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:odyssee/models/line.dart';
@@ -13,12 +14,11 @@ class GameMap extends StatefulWidget {
 
 class _GameMapState extends State<GameMap> {
   GoogleMapController mapController;
-  final LatLng _center = const LatLng(37.8662, -119.5422);
 
+  final LatLng _center = const LatLng(37.8662, -119.5422);
   final Set<Polyline>_polyline = {};
   String _trailName = 'Cooks Meadow Loop';
   List<LatLng> polylinePoints = List();
-//  PolylinePoints polylinePoints = PolylinePoints();
 
   Icon locationIcon = Icon(Icons.directions_walk);
   Icon sourceIcon = Icon(Icons.trip_origin);
@@ -29,7 +29,28 @@ class _GameMapState extends State<GameMap> {
   Location location;
 
   void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+
+//    polylinePoints = Line(_trailName).points();
+
+//    setState(() {
+//      mapController = controller;
+//
+//      _polyline.add(Polyline(
+//              polylineId: PolylineId('line1'),
+//              visible: true,
+//              points: polylinePoints,
+//              width: 5,
+//              color: Colors.blue,
+//          ));
+//    });
+
+    // pan to the new position of the trail
+    CameraPosition cPosition = CameraPosition(
+      zoom: 16.0,
+      target: polylinePoints[0],
+      );
+
+      mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
   }
   @override
   void initState() {
@@ -37,7 +58,6 @@ class _GameMapState extends State<GameMap> {
 
     // create an instance of Location
     location = new Location();
-//    polylinePoints = PolylinePoints();
 
     // subscribe to changes in the user's location
     // by "listening" to the location's onLocationChanged event
@@ -49,6 +69,13 @@ class _GameMapState extends State<GameMap> {
     });
     // set the initial location
     setInitialLocation();
+
+    CameraPosition cPosition = CameraPosition(
+      zoom: 16.0,
+      target: polylinePoints[0],
+    );
+
+    mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
   }
 
   void setInitialLocation() async {
@@ -58,9 +85,9 @@ class _GameMapState extends State<GameMap> {
   }
 
   void _onChangeTrail(String trailName, GoogleMapController controller){
-
+    
     print('Updating the trail');
-
+    
     setState(() {
       _trailName = trailName;
       print('New trailname $_trailName');
@@ -73,50 +100,43 @@ class _GameMapState extends State<GameMap> {
         visible: true,
         points: polylinePoints,
         width: 5,
-        color: Color(0xFFE86935),
-      ));
+        color: Colors.blue,
+      ));  
 
-    });
-
-    // pan to the new position of the trail
-    CameraPosition cPosition = CameraPosition(
+    }); 
+    
+     // pan to the new position of the trail
+     CameraPosition cPosition = CameraPosition(
       zoom: 16.0,
       target: polylinePoints[0],
-    );
+      );
 
-    mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+      mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
   }
 
   @override
   Widget build(BuildContext context) {
+    print('PolyLine');
+    print(_polyline);
+    print(_trailName);
+
     return MaterialApp(
       home: Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: BaseAppBar(
-            title: Text('Trail Map'),
-            appBar: AppBar(),
+        appBar: BaseAppBar(
+          title: Text('Trail Map'),
+          appBar: AppBar(),
+        ),
+        drawer: BaseDrawer(),
+        body: GoogleMap(
+          polylines: _polyline,
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: CameraPosition(
+            target: polylinePoints.isEmpty ? _center : polylinePoints[0],
+            zoom: polylinePoints.isEmpty ? 11.0 : 18.0,
           ),
-          drawer: BaseDrawer(),
-          body: new GoogleMap(
-            polylines: _polyline,
-            myLocationEnabled: true,
-            compassEnabled: true,
-            tiltGesturesEnabled: false,
-            mapType: MapType.normal,
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: polylinePoints.isEmpty ? _center : polylinePoints[0],
-              zoom: polylinePoints.isEmpty ? 10.0 : 18.0,
-            ),
-//            minMaxZoomPreference: new MinMaxZoomPreference(1, 11),
-            cameraTargetBounds: new CameraTargetBounds(new LatLngBounds(
-                northeast: LatLng(38.187466, -119.201724),
-                southwest: LatLng(37.495563, -119.885509)
-            ),
-            ),
-          ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-          floatingActionButton: Padding(
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -124,14 +144,15 @@ class _GameMapState extends State<GameMap> {
                 PopupMenuButton(
                   offset: Offset(100, 100),
                   icon: Icon(Icons.map),
+                  initialValue: 'Select a Trail',
                   onSelected: (val) { _onChangeTrail(val, mapController);} ,
                   itemBuilder: (context) => TrailData.trailMap.keys.map((trail) =>
                     PopupMenuItem(
-                        value: trail,
-                        child: Text(trail)
-                    )
-                    ).toList(),
-                  ),
+                      value: trail,
+                      child: Text(trail)
+                      )
+                  ).toList(),
+                ),
                 FloatingActionButton(
                   elevation: 5.0,
                   foregroundColor: Color(0xFFE5D9A5),
@@ -164,10 +185,10 @@ class _GameMapState extends State<GameMap> {
 //                  mini: true,
 //                  child: new Icon(Icons.art_track, size: 25.0,),
 //                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ClassifyImage())),
-              ],
-            ),
-          ),
-        ),
+//              ],
+//            ),
+//      ),
+//      ),
 //          FloatingActionButton(
 //            elevation: 5.0,
 //            foregroundColor: Color(0xFFE5D9A5),
@@ -175,6 +196,10 @@ class _GameMapState extends State<GameMap> {
 //            child: new Icon(Icons.camera_alt, size: 45.0,),
 //            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ClassifyImage())),
 //          ),
+              ]
+      ),
+    )
+    )
     );
   }
 }
