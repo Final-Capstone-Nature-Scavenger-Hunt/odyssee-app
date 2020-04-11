@@ -13,6 +13,7 @@ class GameMap extends StatefulWidget {
 
 class _GameMapState extends State<GameMap> {
   GoogleMapController mapController;
+  Set<Marker> _markers = Set<Marker>();
   final LatLng _center = const LatLng(37.8662, -119.5422);
 
   final Set<Polyline>_polyline = {};
@@ -20,16 +21,31 @@ class _GameMapState extends State<GameMap> {
   List<LatLng> polylinePoints = List();
 //  PolylinePoints polylinePoints = PolylinePoints();
 
-  Icon locationIcon = Icon(Icons.directions_walk);
-  Icon sourceIcon = Icon(Icons.trip_origin);
-  Icon destinationIcon = Icon(Icons.flag);
-
   LocationData currentLocation;
   LocationData destinationLocation;
   Location location;
 
+  BitmapDescriptor personalIcon;
+  BitmapDescriptor sourceIcon;
+  BitmapDescriptor destinationIcon;
+
+  void setPersonalIcon() async {
+    sourceIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 2), 'assets/icons/hiking-solid-small.png');
+  }
+
+  void setSourceAndDestinationIcons() async {
+    sourceIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 2), 'assets/icons/hiking-solid-small.png');
+    destinationIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(size: Size(5,5)), 'assets/icons/flag-checkered-solid.png');
+  }
+
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+
+    setSourceAndDestinationIcons();
+    setPersonalIcon();
   }
   @override
   void initState() {
@@ -46,6 +62,13 @@ class _GameMapState extends State<GameMap> {
       // current user's position in real time,
       // so we're holding on to it
       currentLocation = cLoc;
+      LatLng latlng = LatLng(currentLocation.latitude, currentLocation.longitude);
+
+      _markers.add(Marker(
+        markerId: MarkerId('personalPin'),
+        position: latlng,
+        icon: personalIcon,
+      ));
     });
     // set the initial location
     setInitialLocation();
@@ -55,6 +78,31 @@ class _GameMapState extends State<GameMap> {
     // set the initial location by pulling the user's
     // current location from the location's getLocation()
     currentLocation = await location.getLocation();
+
+    LatLng latlng = LatLng(currentLocation.latitude, currentLocation.longitude);
+    _markers.add(Marker(
+      markerId: MarkerId('personalPin'),
+      position: latlng,
+      icon: personalIcon,
+    ));
+  }
+
+  void showTrailPinsOnMap(List<LatLng> ppoints) {
+
+    _markers.add(Marker(
+      markerId: MarkerId('sourcePin'),
+      position: ppoints.first,
+      icon: sourceIcon,
+    ));
+
+//    _markers.add(Marker(
+//      markerId: MarkerId('destinationPin'),
+//      position: ppoints.last,
+//      icon: destinationIcon,
+//    ));
+
+    print(ppoints.first);
+    print(ppoints.last);
   }
 
   void _onChangeTrail(String trailName, GoogleMapController controller){
@@ -78,6 +126,8 @@ class _GameMapState extends State<GameMap> {
 
     });
 
+    showTrailPinsOnMap(polylinePoints);
+
     // pan to the new position of the trail
     CameraPosition cPosition = CameraPosition(
       zoom: 16.0,
@@ -99,6 +149,7 @@ class _GameMapState extends State<GameMap> {
           drawer: BaseDrawer(),
           body: new GoogleMap(
             polylines: _polyline,
+            markers: _markers,
             myLocationEnabled: true,
             compassEnabled: true,
             tiltGesturesEnabled: false,
@@ -157,24 +208,10 @@ class _GameMapState extends State<GameMap> {
                     ),
                   ],
                 ),
-//                FloatingActionButton(
-//                  elevation: 5.0,
-//                  foregroundColor: Color(0xFFE5D9A5),
-//                  backgroundColor: Color(0xEF194000),
-//                  mini: true,
-//                  child: new Icon(Icons.art_track, size: 25.0,),
-//                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ClassifyImage())),
               ],
             ),
           ),
         ),
-//          FloatingActionButton(
-//            elevation: 5.0,
-//            foregroundColor: Color(0xFFE5D9A5),
-//            backgroundColor: Color(0xEF194000),
-//            child: new Icon(Icons.camera_alt, size: 45.0,),
-//            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ClassifyImage())),
-//          ),
     );
   }
 }
