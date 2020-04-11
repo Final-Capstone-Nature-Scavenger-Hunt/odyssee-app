@@ -67,6 +67,7 @@ flutter:
    - assets/nature.jpg
    - assets/icons/
    - assets/images/
+   - assets/images/rep_images/
    - assets/gpx/
 
   fonts:

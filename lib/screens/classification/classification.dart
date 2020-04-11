@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:odyssee/mocks/hunt_data.dart';
+import 'package:odyssee/data/hunt_data.dart';
 import 'package:odyssee/screens/classification/classification_helpers.dart';
 import 'package:odyssee/shared/styles.dart';
 import 'package:provider/provider.dart';

@@ -12,7 +12,11 @@ class Line {
   }
 
   List<LatLng> points (){
-    List<List> pointList = TrailData.trailMap[trailName];
+    List<List> pointList = TrailData.trailMap[trailName]['points'];
     return pointList.map(_listToLatLng).toList();
+  }
+
+  List<String> get species {
+    return TrailData.trailMap[trailName]['species'];
   }
 }

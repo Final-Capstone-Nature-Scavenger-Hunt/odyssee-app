@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
+import 'package:odyssee/data/hunt_data.dart';
 import 'package:odyssee/models/line.dart';
 import 'package:odyssee/data/trails.dart';
 import 'package:odyssee/screens/classification/classification.dart';
 import 'package:odyssee/shared/header_nav.dart';
+import 'package:odyssee/shared/styles.dart';
 
 class GameMap extends StatefulWidget {
   @override
@@ -19,7 +21,12 @@ class _GameMapState extends State<GameMap> {
   final Set<Polyline>_polyline = {};
   String _trailName = 'Cooks Meadow Loop';
   List<LatLng> polylinePoints = List();
-//  PolylinePoints polylinePoints = PolylinePoints();
+
+
+  List<String> species = List();
+  String selectedSpecies;
+
+  OverlayEntry _overlayEntry;
 
   LocationData currentLocation;
   LocationData destinationLocation;
@@ -113,7 +120,9 @@ class _GameMapState extends State<GameMap> {
       _trailName = trailName;
       print('New trailname $_trailName');
 
-      polylinePoints = Line(_trailName).points();
+      Line line = Line(_trailName);
+
+      polylinePoints = line.points();
       mapController = controller;
 
       _polyline.add(Polyline(
@@ -124,6 +133,8 @@ class _GameMapState extends State<GameMap> {
         color: Color(0xFFE86935),
       ));
 
+      species = line.species;
+
     });
 
     showTrailPinsOnMap(polylinePoints);
@@ -133,12 +144,87 @@ class _GameMapState extends State<GameMap> {
       zoom: 16.0,
       target: polylinePoints[0],
     );
-
     mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
+
+
   }
+
+  Widget _pictureIcon(String assetPath){
+      print(assetPath);
+      return Image.asset(assetPath);
+    }
+
+    OverlayEntry createOverlay(){
+      
+      return OverlayEntry(
+      builder: (BuildContext context) => GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              child: Align(
+              alignment: Alignment.center,
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal:50.0, vertical: 100),
+                child: Column(
+                  children: <Widget>[
+                    _pictureIcon(HuntData.huntMap[selectedSpecies]['HuntImage']),
+                    Text(selectedSpecies,
+                    style: Styles.headerLarge,
+                    ),
+                    
+                  ],
+                ),
+                ),
+              ),
+              onTap: () => _overlayEntry?.remove(),
+            )
+    );
+    }
 
   @override
   Widget build(BuildContext context) {
+
+
+    List<Widget> stackChildren = [];
+
+    stackChildren.add( 
+      GoogleMap(
+              polylines: _polyline,
+              markers: _markers,
+              myLocationEnabled: true,
+              compassEnabled: true,
+              tiltGesturesEnabled: false,
+              mapType: MapType.normal,
+              onMapCreated: _onMapCreated,
+              initialCameraPosition: CameraPosition(
+                target: polylinePoints.isEmpty ? _center : polylinePoints[0],
+                zoom: polylinePoints.isEmpty ? 10.0 : 18.0,
+              ),
+//            minMaxZoomPreference: new MinMaxZoomPreference(1, 11),
+              cameraTargetBounds: new CameraTargetBounds(new LatLngBounds(
+                  northeast: LatLng(38.187466, -119.201724),
+                  southwest: LatLng(37.495563, -119.885509)
+              ),
+              ),
+            ));
+
+    
+    if (selectedSpecies != null){
+      stackChildren.add(
+      Positioned(
+        child: InkWell( 
+          child :_pictureIcon(HuntData.huntMap[selectedSpecies]['HuntImage']),
+          onTap: () { 
+            setState(() {
+              _overlayEntry = createOverlay();
+            }); 
+            Overlay.of(context).insert(_overlayEntry); },
+          ),
+        right: 15,
+        bottom: 90,
+        height: 30,
+        width: 30,
+      ));
+    }
+
     return MaterialApp(
       home: Scaffold(
           backgroundColor: Colors.transparent,
@@ -147,25 +233,9 @@ class _GameMapState extends State<GameMap> {
             appBar: AppBar(),
           ),
           drawer: BaseDrawer(),
-          body: new GoogleMap(
-            polylines: _polyline,
-            markers: _markers,
-            myLocationEnabled: true,
-            compassEnabled: true,
-            tiltGesturesEnabled: false,
-            mapType: MapType.normal,
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: polylinePoints.isEmpty ? _center : polylinePoints[0],
-              zoom: polylinePoints.isEmpty ? 10.0 : 18.0,
-            ),
-//            minMaxZoomPreference: new MinMaxZoomPreference(1, 11),
-            cameraTargetBounds: new CameraTargetBounds(new LatLngBounds(
-                northeast: LatLng(38.187466, -119.201724),
-                southwest: LatLng(37.495563, -119.885509)
-            ),
-            ),
-          ),
+          body: Stack(
+                    children: stackChildren,
+                ),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
           floatingActionButton: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -190,23 +260,30 @@ class _GameMapState extends State<GameMap> {
                   child: new Icon(Icons.camera_alt, size: 45.0,),
                   onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ClassifyImage())),
                 ),
-                PopupMenuButton<int>(
+                PopupMenuButton(
                   offset: Offset(100, 100),
                   icon: Icon(Icons.art_track),
-                  itemBuilder: (context) => [
+                  onSelected: (val) => setState(()=> selectedSpecies = val),
+                  itemBuilder: (context) => species.map((speciesName) =>
                     PopupMenuItem(
-                      value: 1,
-                      child: Text(
-                        "Flutter Open",
-                      ),
-                    ),
-                    PopupMenuItem(
-                      value: 2,
-                      child: Text(
-                        "Flutter Tutorial",
-                      ),
-                    ),
-                  ],
+                      value: speciesName,
+                      child: Text(speciesName)
+                    )
+                  ).toList()
+                  // [
+                  //   PopupMenuItem(
+                  //     value: 1,
+                  //     child: Text(
+                  //       "Flutter Open",
+                  //     ),
+                  //   ),
+                  //   PopupMenuItem(
+                  //     value: 2,
+                  //     child: Text(
+                  //       "Flutter Tutorial",
+                  //     ),
+                  //   ),
+                  // ],
                 ),
               ],
             ),

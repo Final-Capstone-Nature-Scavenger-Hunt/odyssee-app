@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:odyssee/mocks/hunt_data.dart';
+import 'package:odyssee/data/hunt_data.dart';
 import 'package:odyssee/models/hunt_item.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:odyssee/screens/classification/hunt_screen.dart';
