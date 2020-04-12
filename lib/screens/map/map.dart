@@ -149,9 +149,8 @@ class _GameMapState extends State<GameMap> {
 
   }
 
-  Widget _pictureIcon(String assetPath){
-      print(assetPath);
-      return Image.asset(assetPath);
+  Widget _pictureIcon(String assetPath, {height, width}){
+      return Image.asset(assetPath, height: height,);
     }
 
     OverlayEntry createOverlay(){
@@ -159,19 +158,42 @@ class _GameMapState extends State<GameMap> {
       return OverlayEntry(
       builder: (BuildContext context) => GestureDetector(
               behavior: HitTestBehavior.translucent,
-              child: Align(
-              alignment: Alignment.center,
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal:50.0, vertical: 100),
-                child: Column(
-                  children: <Widget>[
-                    _pictureIcon(HuntData.huntMap[selectedSpecies]['HuntImage']),
-                    Text(selectedSpecies,
-                    style: Styles.headerLarge,
-                    ),
-                    
-                  ],
-                ),
+              child: Material(
+                type: MaterialType.transparency,
+                child: Align(
+                alignment: Alignment.center,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Color(0xFF194000),
+                    border: Border.all(color: Colors.teal[400], width: 3.0)),
+                  margin: EdgeInsets.symmetric(horizontal:50.0, vertical: 100),
+                  padding: EdgeInsets.symmetric(horizontal:5.0, vertical:5.0),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: 3.0, bottom: 3.0),
+                        child: Text(selectedSpecies,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25.0,
+                          fontWeight: FontWeight.bold
+                        ),
+                        ),
+                      ),
+                      _pictureIcon(HuntData.huntMap[selectedSpecies]['HuntImage']),
+                      SizedBox(height: 10.0),
+                      SizedBox(height: 10.0),
+                      Container(
+                        child: Text(HuntData.huntMap[selectedSpecies]['Hints'],
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18.0
+                        ),
+                        ),
+                      )
+                    ],
+                  ),
+                  ),
                 ),
               ),
               onTap: () => _overlayEntry?.remove(),
@@ -270,20 +292,6 @@ class _GameMapState extends State<GameMap> {
                       child: Text(speciesName)
                     )
                   ).toList()
-                  // [
-                  //   PopupMenuItem(
-                  //     value: 1,
-                  //     child: Text(
-                  //       "Flutter Open",
-                  //     ),
-                  //   ),
-                  //   PopupMenuItem(
-                  //     value: 2,
-                  //     child: Text(
-                  //       "Flutter Tutorial",
-                  //     ),
-                  //   ),
-                  // ],
                 ),
               ],
             ),
