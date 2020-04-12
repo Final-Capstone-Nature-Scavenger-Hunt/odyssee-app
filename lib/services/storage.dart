@@ -26,6 +26,15 @@ class Storage{
     print("The URL is $url");
   }
 
+  Future<String> uploadPhotoURL(String photoURL) async {
+    dynamic storageReference = _store.ref().child(photoURL);
+    final StorageUploadTask uploadTask = storageReference.putFile(fileObject);
+    final StorageTaskSnapshot downloadUrl = (await uploadTask.onComplete);
+    final String url = (await downloadUrl.ref.getDownloadURL());
+    print(url);
+    return url;
+  }
+
 
 
 

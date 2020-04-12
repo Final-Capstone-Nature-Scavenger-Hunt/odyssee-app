@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:odyssee/services/database.dart';
+import 'package:odyssee/services/storage.dart';
 
 
 class AuthService {
@@ -47,15 +50,19 @@ class AuthService {
   }
 
   // register with email & password
-  Future registerWithEmailAndPassword(String email, String password, String displayName) async {
+  Future registerWithEmailAndPassword(String email, String password, String displayName, File displayImage) async {
     try{
       AuthResult result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
       FirebaseUser user = result.user;
 
-      const about = "We are all humans at the end of it all";
-
       UserUpdateInfo updateInfo = UserUpdateInfo();
       updateInfo.displayName = displayName;
+
+      if (displayImage != null){
+        String photoURL = "displayPhotos/${user.uid}/currentPic";
+        updateInfo.photoUrl = photoURL;
+        await Storage(uid: user.uid, fileObject: displayImage).uploadPhotoURL(photoURL);
+      }
 
       await user.updateProfile(updateInfo);
 
