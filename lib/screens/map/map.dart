@@ -5,6 +5,7 @@ import 'package:odyssee/data/hunt_data.dart';
 import 'package:odyssee/models/line.dart';
 import 'package:odyssee/data/trails.dart';
 import 'package:odyssee/screens/classification/classification.dart';
+import 'package:odyssee/screens/map/map_helpers.dart';
 import 'package:odyssee/shared/header_nav.dart';
 import 'package:odyssee/shared/styles.dart';
 
@@ -149,57 +150,89 @@ class _GameMapState extends State<GameMap> {
 
   }
 
+  // create hunt picture icon
   Widget _pictureIcon(String assetPath, {height, width}){
       return Image.asset(assetPath, height: height,);
     }
 
-    OverlayEntry createOverlay(){
-      
-      return OverlayEntry(
-      builder: (BuildContext context) => GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              child: Material(
-                type: MaterialType.transparency,
-                child: Align(
-                alignment: Alignment.center,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFF194000),
-                    border: Border.all(color: Colors.teal[400], width: 3.0)),
-                  margin: EdgeInsets.symmetric(horizontal:50.0, vertical: 100),
-                  padding: EdgeInsets.symmetric(horizontal:5.0, vertical:5.0),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(top: 3.0, bottom: 3.0),
-                        child: Text(selectedSpecies,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 25.0,
-                          fontWeight: FontWeight.bold
-                        ),
-                        ),
+  // create an overlay
+  OverlayEntry createOverlay(){ 
+    return OverlayEntry(
+    builder: (BuildContext context) => GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            child: Material(
+              type: MaterialType.transparency,
+              child: Align(
+              alignment: Alignment.center,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFF194000),
+                  border: Border.all(color: Colors.teal[400], width: 3.0)),
+                margin: EdgeInsets.symmetric(horizontal:50.0, vertical: 100),
+                padding: EdgeInsets.symmetric(horizontal:5.0, vertical:5.0),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 3.0, bottom: 3.0),
+                      child: Text(selectedSpecies,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.bold
                       ),
-                      _pictureIcon(HuntData.huntMap[selectedSpecies]['HuntImage']),
-                      SizedBox(height: 10.0),
-                      SizedBox(height: 10.0),
-                      Container(
-                        child: Text(HuntData.huntMap[selectedSpecies]['Hints'],
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18.0
-                        ),
-                        ),
-                      )
-                    ],
-                  ),
-                  ),
+                      ),
+                    ),
+                    _pictureIcon(HuntData.huntMap[selectedSpecies]['HuntImage']),
+                    SizedBox(height: 10.0),
+                    SizedBox(height: 10.0),
+                    Container(
+                      child: Text(HuntData.huntMap[selectedSpecies]['Hints'],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0
+                      ),
+                      ),
+                    )
+                  ],
+                ),
                 ),
               ),
-              onTap: () => _overlayEntry?.remove(),
-            )
+            ),
+            onTap: () => _overlayEntry?.remove(),
+          )
     );
     }
+
+  //show alert dialog
+  void showAlertDialog(BuildContext context, String dropDownSelection){
+    Widget confirmButton = FlatButton(
+      child: Text("CONFIRM"),
+      onPressed : ()  {
+        print('Going to set the species');
+        setState(() {
+          selectedSpecies = dropDownSelection;
+        });
+        Navigator.of(context).pop();
+      }
+    );
+
+    Widget cancelButton = FlatButton(
+      child: Text("CANCEL"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Confirm Your Selection"),
+        content: Text("Do you want to find the $dropDownSelection?"),
+        actions: <Widget>[ confirmButton , cancelButton],
+        elevation: 24.0,
+        ),
+      barrierDismissible: false
+      );
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -285,7 +318,9 @@ class _GameMapState extends State<GameMap> {
                 PopupMenuButton(
                   offset: Offset(100, 100),
                   icon: Icon(Icons.art_track),
-                  onSelected: (val) => setState(()=> selectedSpecies = val),
+                  onSelected: (val) {
+                    showAlertDialog(context, val);
+                  },
                   itemBuilder: (context) => species.map((speciesName) =>
                     PopupMenuItem(
                       value: speciesName,
