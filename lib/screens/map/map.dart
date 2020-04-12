@@ -18,6 +18,7 @@ class _GameMapState extends State<GameMap> {
   GoogleMapController mapController;
   Set<Marker> _markers = Set<Marker>();
   final LatLng _center = const LatLng(37.8662, -119.5422);
+  double currentElevation;
 
   final Set<Polyline>_polyline = {};
   String _trailName = 'Cooks Meadow Loop';
@@ -71,7 +72,9 @@ class _GameMapState extends State<GameMap> {
       // so we're holding on to it
       currentLocation = cLoc;
       LatLng latlng = LatLng(currentLocation.latitude, currentLocation.longitude);
-      print(currentLocation.altitude);
+      
+      currentElevation = currentLocation.altitude;
+      updateElevation();
 
       _markers.add(Marker(
         markerId: MarkerId('personalPin'),
@@ -149,6 +152,12 @@ class _GameMapState extends State<GameMap> {
     mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
 
 
+  }
+
+  void updateElevation(){
+    setState(() {
+      currentElevation = currentLocation.altitude;
+    });
   }
 
   // create hunt picture icon
@@ -281,6 +290,10 @@ class _GameMapState extends State<GameMap> {
         width: 30,
       ));
     }
+
+    stackChildren.add(
+      MapHelpers().zoneWidget(currentElevation)
+    );
 
     return MaterialApp(
       home: Scaffold(
