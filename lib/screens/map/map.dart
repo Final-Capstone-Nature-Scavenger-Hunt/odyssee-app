@@ -71,6 +71,7 @@ class _GameMapState extends State<GameMap> {
       // so we're holding on to it
       currentLocation = cLoc;
       LatLng latlng = LatLng(currentLocation.latitude, currentLocation.longitude);
+      print(currentLocation.altitude);
 
       _markers.add(Marker(
         markerId: MarkerId('personalPin'),
@@ -186,6 +187,7 @@ class _GameMapState extends State<GameMap> {
                     SizedBox(height: 10.0),
                     SizedBox(height: 10.0),
                     Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4.0),
                       child: Text(HuntData.huntMap[selectedSpecies]['Hints'],
                       style: TextStyle(
                         color: Colors.white,
