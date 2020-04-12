@@ -18,8 +18,8 @@ class ClassificationHelpers {
       Map huntMapItem = HuntData.huntMap[predictedClass];
       HuntItem huntItem = HuntItem(
                                 huntName: huntMapItem['HuntName'], description: huntMapItem['Description'], 
-                                hint: huntMapItem['Hints']);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => HuntScreen(huntItem : huntItem)));
+                                hint: huntMapItem['Hints'], huntImage: huntMapItem['HuntImage']);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => HuntScreen(huntItem : huntItem, foundImage: image,)));
     } else {
       showAlertDialog(context, user, predictedClass, image, findStatus);
     }

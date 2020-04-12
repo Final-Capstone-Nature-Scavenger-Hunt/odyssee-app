@@ -39,7 +39,7 @@ class Styles {
           )
       );
 
-  static dynamic appBarStyle = Colors.green[700];
+  static dynamic appBarStyle = Color(0xFF194000);
 
 
   static final headerLarge = TextStyle(

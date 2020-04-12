@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:odyssee/data/hunt_data.dart';
 import 'package:odyssee/screens/classification/classification_helpers.dart';
+import 'package:odyssee/shared/constants.dart';
 import 'package:odyssee/shared/styles.dart';
 import 'package:provider/provider.dart';
 import 'package:odyssee/models/user.dart';
@@ -139,24 +140,33 @@ class _ClassifyImageState extends State<ClassifyImage> {
       //   ),
 
       FlatButton(
-        child: Text('Confirm Image'),
+        child: Text('Confirm Image',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0
+                  )
+                  ),
         onPressed: () =>  ClassificationHelpers().confirmClassification(context, user, _recognitions, 
                                                                       widget.predictedClass, findStatus, _image),
-        color: Colors.teal[300]
+        color: Colors.teal[400]
         )
     ];
 
     stackChildren.add(Center(
       child: Column(
         children: [
-          Expanded(
-                      child: Container(
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Constants.defaultBackgroudColor
+              ),
+              color: Colors.white
+            ),
             child: _image == null ? Text('No image selected.') : Image.file(_image),
             alignment: Alignment.center,
             height: size.height * 0.7,
-            width: size.width * 0.7
-            ),
-          )
+            width: size.width * 0.85,
+            )
         ]..addAll(belowImageWidgets),
       ),
     ));
@@ -177,6 +187,7 @@ class _ClassifyImageState extends State<ClassifyImage> {
     }
 
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
 //        leading: Builder(
 //          builder: (BuildContext context) {
@@ -196,6 +207,14 @@ class _ClassifyImageState extends State<ClassifyImage> {
         ),
       ),
       body: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+          color: Constants.defaultBackgroudColor,
+          width: 3.0
+            ),
+            color: Colors.white
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
         padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
         child: Stack(
           children: stackChildren,
