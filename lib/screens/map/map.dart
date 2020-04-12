@@ -313,7 +313,11 @@ class _GameMapState extends State<GameMap> {
                   foregroundColor: Color(0xFFE5D9A5),
                   backgroundColor: Color(0xEF194000),
                   child: new Icon(Icons.camera_alt, size: 45.0,),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ClassifyImage())),
+                  onPressed: () => Navigator.push(context, 
+                            MaterialPageRoute(builder: (context) => 
+                              ClassifyImage( predictedClass : selectedSpecies)
+                              )
+                            ),
                 ),
                 PopupMenuButton(
                   offset: Offset(100, 100),

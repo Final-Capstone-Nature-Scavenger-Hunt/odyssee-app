@@ -13,6 +13,11 @@ import 'package:tflite/tflite.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ClassifyImage extends StatefulWidget {
+
+  final String predictedClass;
+
+  ClassifyImage({this.predictedClass});
+
   @override
   _ClassifyImageState createState() => _ClassifyImageState();
 }
@@ -24,7 +29,7 @@ class _ClassifyImageState extends State<ClassifyImage> {
   double _imageHeight;
   double _imageWidth;
   bool _busy = false;
-  String predictedClass;
+  //String predictedClass;
   bool findStatus = false;
 
   Future predictImagePicker(String uid, bool fromCamera) async {
@@ -122,21 +127,21 @@ class _ClassifyImageState extends State<ClassifyImage> {
 
     List<Widget> belowImageWidgets = [
 
-      DropdownButtonFormField(
-        value: predictedClass ?? huntNames[0],
-        items: huntNames.map((huntName) => 
-        DropdownMenuItem(
-          child: Text(huntName),
-          value: huntName,
-        )
-        ).toList(),
-        onChanged: (val) => setState(() => predictedClass = val),
-        ),
+      // DropdownButtonFormField(
+      //   value: predictedClass ?? huntNames[0],
+      //   items: huntNames.map((huntName) => 
+      //   DropdownMenuItem(
+      //     child: Text(huntName),
+      //     value: huntName,
+      //   )
+      //   ).toList(),
+      //   onChanged: (val) => setState(() => predictedClass = val),
+      //   ),
 
       FlatButton(
         child: Text('Confirm Image'),
         onPressed: () =>  ClassificationHelpers().confirmClassification(context, user, _recognitions, 
-                                                                      predictedClass, findStatus, _image),
+                                                                      widget.predictedClass, findStatus, _image),
         color: Colors.teal[300]
         )
     ];
