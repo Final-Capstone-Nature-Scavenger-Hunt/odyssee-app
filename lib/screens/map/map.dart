@@ -34,28 +34,26 @@ class _GameMapState extends State<GameMap> {
   LocationData destinationLocation;
   Location location;
 
-  BitmapDescriptor personalIcon;
   BitmapDescriptor sourceIcon;
   BitmapDescriptor destinationIcon;
 
-  void setPersonalIcon() async {
+  void setSourceIcon() async {
     sourceIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2), 'assets/icons/hiking-solid-small.png');
+        ImageConfiguration(devicePixelRatio: 2), 'assets/icons/origin-map-marker-small.png');
   }
 
-  void setSourceAndDestinationIcons() async {
-    sourceIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2), 'assets/icons/hiking-solid-small.png');
+  void setDestinationIcons() async {
     destinationIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(5,5)), 'assets/icons/flag-checkered-solid.png');
+        ImageConfiguration(devicePixelRatio: 2), 'assets/icons/end-map-marker-small.png');
   }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
 
-    setSourceAndDestinationIcons();
-    setPersonalIcon();
+    setDestinationIcons();
+    setSourceIcon();
   }
+
   @override
   void initState() {
     super.initState();
@@ -75,12 +73,6 @@ class _GameMapState extends State<GameMap> {
       
       currentElevation = currentLocation.altitude;
       updateElevation();
-
-      _markers.add(Marker(
-        markerId: MarkerId('personalPin'),
-        position: latlng,
-        icon: personalIcon,
-      ));
     });
     // set the initial location
     setInitialLocation();
@@ -92,29 +84,25 @@ class _GameMapState extends State<GameMap> {
     currentLocation = await location.getLocation();
 
     LatLng latlng = LatLng(currentLocation.latitude, currentLocation.longitude);
-    _markers.add(Marker(
-      markerId: MarkerId('personalPin'),
-      position: latlng,
-      icon: personalIcon,
-    ));
   }
 
   void showTrailPinsOnMap(List<LatLng> ppoints) {
 
+    _markers.clear();
+    
     _markers.add(Marker(
       markerId: MarkerId('sourcePin'),
       position: ppoints.first,
       icon: sourceIcon,
     ));
 
-//    _markers.add(Marker(
-//      markerId: MarkerId('destinationPin'),
-//      position: ppoints.last,
-//      icon: destinationIcon,
-//    ));
-
-    print(ppoints.first);
-    print(ppoints.last);
+    if (ppoints.first != ppoints.last) {
+        _markers.add(Marker(
+          markerId: MarkerId('destinationPin'),
+          position: ppoints.last,
+          icon: destinationIcon,
+        ));
+    }
   }
 
   void _onChangeTrail(String trailName, GoogleMapController controller){
