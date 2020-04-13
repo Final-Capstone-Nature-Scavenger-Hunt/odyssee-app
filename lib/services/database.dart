@@ -136,4 +136,19 @@ class DatabaseService {
     return followers.snapshots().map(_getUserFromFollowerDoc);
   }
 
+  Future updateAchievements(String uid, String achievementName){
+     final CollectionReference achievementsCollection = Firestore.instance.collection('userGameData');
+     return achievementsCollection.document(uid).updateData({
+       'Achievements': FieldValue.arrayUnion([achievementName])
+     });
+  }
+
+  Future updateGameFindings(String foundItem, double score){
+    final CollectionReference achievementsCollection = Firestore.instance.collection('userGameData');
+    return achievementsCollection.document(uid).updateData({
+      'FoundItems': FieldValue.arrayUnion([foundItem]),
+      'Score': FieldValue.increment(score)
+    });
+  }
+
 }

@@ -36,8 +36,8 @@ class _HuntScreenState extends State<HuntScreen> {
         .addPostFrameCallback((_) => displayOverlay(context));
   }
 
-  void getAchievements() async {
-    List<String> achievementsList = await AchievementsUpdater().updateFoundItem(widget.huntItem.huntName);
+  void getAchievements(User user) async {
+    List<String> achievementsList = await AchievementsUpdater().updateFoundItem(widget.huntItem.huntName, user);
     setState(() {
       newAchievements = achievementsList;
       _overlayEntry = newAchievements.isNotEmpty ? createOverlay(newAchievements[0]) : null;
@@ -109,9 +109,9 @@ class _HuntScreenState extends State<HuntScreen> {
   Widget build(BuildContext context) {
 
     final user = Provider.of<User>(context);
-    getAchievements();
+    getAchievements(user);
 
-    print(newAchievements);
+    //print(newAchievements);
 
 
     return Scaffold(
