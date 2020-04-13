@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -8,6 +10,7 @@ import 'package:odyssee/screens/classification/classification.dart';
 import 'package:odyssee/screens/map/map_helpers.dart';
 import 'package:odyssee/shared/header_nav.dart';
 import 'package:odyssee/shared/styles.dart';
+import 'package:path/path.dart';
 
 class GameMap extends StatefulWidget {
   @override
@@ -132,14 +135,28 @@ class _GameMapState extends State<GameMap> {
 
     showTrailPinsOnMap(polylinePoints);
 
-    // pan to the new position of the trail
+    LatLng currentLatLng = LatLng(currentLocation.latitude, currentLocation.longitude);
+    LatLng mid = MapHelpers.calcLatLngMidpoint(currentLatLng, polylinePoints[0]);
+    LatLng max = MapHelpers.maxDistLatLng(currentLatLng, polylinePoints);
+    double dist = MapHelpers.calcDistance(currentLatLng, max);
+    print("Distance is $dist");
+    double zoomLevel = MapHelpers.getZoomLevel(dist);
+    print("Zoom Level: $zoomLevel");
+
+//    LatLng maxLatLng = MapHelpers.maxDistLatLng(currentLatLng, polylinePoints);
+//    LatLng sw = MapHelpers.getSW(currentLatLng, maxLatLng);
+//    LatLng ne = MapHelpers.getNE(currentLatLng, maxLatLng);
+//    LatLngBounds bounds = LatLngBounds(southwest: sw, northeast: ne);
+
+    // pan to the midpoint between the trailhead and the users position
     CameraPosition cPosition = CameraPosition(
-      zoom: 16.0,
-      target: polylinePoints[0],
+      zoom: zoomLevel,
+      target: mid,
     );
+
     mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
-
-
+//    mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 0));
+//    mapController.animateCamera()
   }
 
   void updateElevation(){
