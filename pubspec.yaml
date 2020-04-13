@@ -37,6 +37,7 @@ dependencies:
   cloud_functions: ^0.4.2+3
   provider: ^3.1.0
   flutter_spinkit: ^4.0.0
+  shared_preferences: 0.5.6+3
 
   # for tflite
   image_picker: ^0.6.3+4
@@ -68,6 +69,7 @@ flutter:
    - assets/icons/
    - assets/images/
    - assets/images/rep_images/
+   - assets/images/achievement_images/
    - assets/gpx/
 
   fonts:

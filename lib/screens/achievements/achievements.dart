@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:odyssee/shared/header_nav.dart';
 
 class Achievements extends StatelessWidget {
+  static var achievementsMap;
+
   @override
   Widget build (BuildContext context) {
     return new Scaffold(

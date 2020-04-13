@@ -1,24 +1,24 @@
-Broadleaf Maple
-California Buckeye
-Milkweed
-California Incense Cedar
-Giant Red Paintbrush
-Pacific Dogwood
-Raven
-California Poppy
-Western Juniper
-Mule Deer
-White Bark Pine
-Knobcone Pine
+Oregon Maple
+California buckeye
+Showy milkweed
+Incense cedar
+Great red paintbrush
+Pacific dogwood
+Common Raven
+Californian Poppy
+Western juniper
+Black tailed Deer
+Whitebark pine
+Narrowcone pine
 Prickly ponderosa
-Digger Pine
+Grey leaf pine
 Douglas Fir
-Black Oak
-Valley Oak
+California black oak
+Valley oak
 Snowplant
-Western Fence Lizard
-Redwood Tree
-California Nutmeg
-Poison Oak
-California Laurel
+Pacific Blue bellied Lizard
+Giant Redwood
+California nutmeg
+Western poison oak
+Myrtlewood
 Not Recognized

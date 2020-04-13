@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:odyssee/models/hunt_item.dart';
 import 'package:odyssee/models/user.dart';
+import 'package:odyssee/data/achievements.dart';
+import 'package:odyssee/screens/classification/achievements_updater.dart';
 import 'package:odyssee/services/database.dart';
 import 'package:odyssee/shared/constants.dart';
 import 'package:odyssee/shared/styles.dart';
@@ -24,11 +26,93 @@ class HuntScreen extends StatefulWidget {
 class _HuntScreenState extends State<HuntScreen> {
 
   bool posted = false;
+  List<String> newAchievements;
+  OverlayEntry _overlayEntry;
+
+
+  void initState(){
+    super.initState();
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => displayOverlay(context));
+  }
+
+  void getAchievements() async {
+    List<String> achievementsList = await AchievementsUpdater().updateFoundItem(widget.huntItem.huntName);
+    setState(() {
+      newAchievements = achievementsList;
+      _overlayEntry = newAchievements.isNotEmpty ? createOverlay(newAchievements[0]) : null;
+    });
+
+  }
+
+
+  Widget _pictureIcon(String assetPath, {height, width}){
+    return Image.asset(assetPath, height: height,);
+  }
+
+  void displayOverlay(BuildContext context){
+    if (_overlayEntry != null){
+      Overlay.of(context).insert(_overlayEntry);
+    }
+  }
+  
+  OverlayEntry createOverlay(achievementName){ 
+    Map achievement = Achievements.achievementsMap[achievementName];
+    return OverlayEntry(
+    builder: (BuildContext context) => GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            child: Material(
+              type: MaterialType.transparency,
+              child: Align(
+              alignment: Alignment.center,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.teal[300],
+                  border: Border.all(color: Colors.teal[400], width: 3.0)),
+                margin: EdgeInsets.symmetric(horizontal:50.0, vertical: 100),
+                padding: EdgeInsets.symmetric(horizontal:5.0, vertical:5.0),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: 3.0, bottom: 3.0),
+                      child: Text("${achievement['AchievementName']} Unlocked",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold
+                      ),
+                      ),
+                    ),
+                    _pictureIcon(achievement['Image'], height: 100.0),
+                    SizedBox(height: 10.0),
+                    SizedBox(height: 10.0),
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Text(achievement['AchievementText'],
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18.0
+                      ),
+                      ),
+                    )
+                  ],
+                ),
+                ),
+              ),
+            ),
+            onTap: () => _overlayEntry?.remove(),
+          )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
 
     final user = Provider.of<User>(context);
+    getAchievements();
+
+    print(newAchievements);
+
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -40,7 +124,7 @@ class _HuntScreenState extends State<HuntScreen> {
         margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
         padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
         decoration: BoxDecoration(
-          color: Constants.defaultBackgroudColor,
+          color: Colors.brown[400],
           border: Border.all(
             color: Colors.teal[400],
             width: 2.0
@@ -104,9 +188,10 @@ Widget _bannerImage( String imageFile, double height){
 
 Widget _postItemButton( String huntName, image, user) {
 
-  return FlatButton(
+  return FlatButton.icon(
     color: Colors.teal[400],
-    child: Text('Post Finding',
+    icon: Icon(Icons.share, color: Colors.white,),
+    label: Text('Share Finding',
       style: TextStyle(
         color: Colors.white,
         fontSize: 20),
