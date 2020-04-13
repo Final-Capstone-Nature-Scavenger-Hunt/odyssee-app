@@ -30,7 +30,8 @@ class MapHelpers {
   }
 
   String currentZone(double elevation){
-    if (elevation >= 1800 && elevation<3000){
+    if(elevation < 1800) return 'Unknown';
+    else if (elevation >= 1800 && elevation<3000){
       return 'Foothills';
     }
     else if (elevation < 6000){
@@ -68,7 +69,7 @@ class MapHelpers {
     String zoneName = currentZone(elevation);
     return Positioned(
       child: InkWell(
-        child: Text(zoneName,
+        child: Text("Eco Zone: $zoneName",
           style: TextStyle(
             color: zoneColors(zoneName),
             backgroundColor : Colors.white,
@@ -79,7 +80,7 @@ class MapHelpers {
       left: 15,
       top: 30,
       height: 60,
-      width: 60,
+      width: 200,
     );
   }
   

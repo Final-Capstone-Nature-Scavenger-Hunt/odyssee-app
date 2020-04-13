@@ -286,14 +286,16 @@ class _GameMapState extends State<GameMap> {
           ),
         right: 15,
         bottom: 90,
-        height: 30,
-        width: 30,
+        height: 50,
+        width: 50,
       ));
     }
 
-    stackChildren.add(
+    if (currentElevation != null) {
+      stackChildren.add(
       MapHelpers().zoneWidget(currentElevation)
     );
+    }
 
     return MaterialApp(
       home: Scaffold(
