@@ -264,6 +264,7 @@ class _GameMapState extends State<GameMap> {
                   itemCount: species.length,
                   itemBuilder: (BuildContext context, int index){
                     String currentSpecies = species[index];
+                    print(currentSpecies);
                     String difficulty = HuntData.huntMap[currentSpecies]['DifficultyLevel'];
 
                     return ListTile(

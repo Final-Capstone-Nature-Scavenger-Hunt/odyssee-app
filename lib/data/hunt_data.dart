@@ -1,7 +1,8 @@
 class HuntData {
 
 
-  static final Map huntMap = {'Black tailed Deer': {'BotanicalName': 'Odocoileus_Hemionus',
+  static final Map huntMap = {
+  'Black tailed Deer': {'BotanicalName': 'Odocoileus_Hemionus',
                        'CarbonHungry?': 0.0,
                        'Decomposer?': 0.0,
                        'Description': 'Since about 12,000 BCE these animals '
@@ -463,3 +464,4 @@ class HuntData {
                     'RarityScore': 5.0,
                     'Scavenger?': 0.0}};
 }
+
