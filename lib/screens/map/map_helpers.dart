@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:odyssee/data/trails.dart';
 import 'package:odyssee/models/game.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:odyssee/services/database.dart';

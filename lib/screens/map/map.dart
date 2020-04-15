@@ -31,6 +31,7 @@ class _GameMapState extends State<GameMap> {
   String selectedSpecies;
 
   OverlayEntry _overlayEntry;
+  OverlayEntry _trailsOverlayEntry;
 
   LocationData currentLocation;
   LocationData destinationLocation;
@@ -216,20 +217,8 @@ class _GameMapState extends State<GameMap> {
     );
     }
 
-  //show alert dialog
-  void showAlertDialog(BuildContext context, String dropDownSelection){
-    Widget confirmButton = FlatButton(
-      child: Text("CONFIRM"),
-      onPressed : ()  {
-        print('Going to set the species');
-        setState(() {
-          selectedSpecies = dropDownSelection;
-        });
-        Navigator.of(context).pop();
-      }
-    );
-
-    Widget cancelButton = FlatButton(
+  void chooseTrail(BuildContext context, mapController){
+    Widget okButton = FlatButton(
       child: Text("CANCEL"),
       onPressed: () => Navigator.of(context).pop(),
     );
@@ -237,14 +226,71 @@ class _GameMapState extends State<GameMap> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Confirm Your Selection"),
-        content: Text("Do you want to find the $dropDownSelection?"),
-        actions: <Widget>[ confirmButton , cancelButton],
+        title: Text("Select a Trail"),
+        content: ListView.builder(
+                  itemCount: TrailData.trailMap.keys.length,
+                  itemBuilder: (BuildContext context, int index){
+                    String trail = TrailData.trailMap.keys.toList()[index];
+                    String difficulty = TrailData.trailMap[trail]['difficulty'] ?? "Easy";
+
+                    return ListTile(
+                      title: Text(trail),
+                      trailing: Text(difficulty,
+                          style: TextStyle(color: Colors.grey[350], fontSize: 15.0 )),
+                      onTap: () { 
+                        _onChangeTrail(trail, mapController);
+                        Navigator.of(context).pop();
+                        },
+                      );
+                  },
+                  shrinkWrap: true,
+                ),
+        actions: <Widget>[ okButton],
         elevation: 24.0,
         ),
       barrierDismissible: false
       );
 
+  }
+
+  void chooseSpecies(BuildContext context){
+    Widget okButton = FlatButton(
+      child: Text(species.isEmpty ? "OK" : "CANCEL"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+
+    Widget dialogContent = species.isEmpty ? Text('Please select a Trail first') : 
+                    ListView.builder(
+                  itemCount: species.length,
+                  itemBuilder: (BuildContext context, int index){
+                    String currentSpecies = species[index];
+                    String difficulty = HuntData.huntMap[currentSpecies]['DifficultyLevel'];
+
+                    return ListTile(
+                      title: Text(currentSpecies),
+                      trailing: Text(difficulty,
+                          style: TextStyle(color: Colors.grey[350], fontSize: 15.0 )),
+                      onTap: () { 
+                          setState(() {
+                            selectedSpecies = currentSpecies;
+                          });
+                          Navigator.of(context).pop();
+                        },
+                      );
+                  },
+                  shrinkWrap: true,
+                );
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Select a Species"),
+        content: dialogContent,
+        actions: <Widget>[ okButton],
+        elevation: 24.0,
+        ),
+      barrierDismissible: false
+      );
   }
 
   @override
@@ -321,17 +367,15 @@ class _GameMapState extends State<GameMap> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                PopupMenuButton(
-                  offset: Offset(100, 100),
+                FlatButton.icon(
+                  label:Text(''),
+                  onPressed: () {
+                    chooseTrail(context, mapController);
+                  },
+                  //tooltip: 'Choose a Trail',
                   icon: Icon(Icons.map),
-                  onSelected: (val) { _onChangeTrail(val, mapController);} ,
-                  itemBuilder: (context) => TrailData.trailMap.keys.map((trail) =>
-                    PopupMenuItem(
-                        value: trail,
-                        child: Text(trail)
-                    )
-                    ).toList(),
-                  ),
+                  //heroTag: null,
+                ),
                 FloatingActionButton(
                   elevation: 5.0,
                   foregroundColor: Color(0xFFE5D9A5),
@@ -351,19 +395,23 @@ class _GameMapState extends State<GameMap> {
                   }
                   },
                 ),
-                PopupMenuButton(
-                  offset: Offset(100, 100),
-                  icon: Icon(Icons.art_track),
-                  onSelected: (val) {
-                    showAlertDialog(context, val);
-                  },
-                  itemBuilder: (context) => species.map((speciesName) =>
-                    PopupMenuItem(
-                      value: speciesName,
-                      child: Text(speciesName)
-                    )
-                  ).toList()
-                ),
+                FlatButton.icon(
+                  onPressed: () => chooseSpecies(context), 
+                  icon: Icon(Icons.art_track), 
+                  label: Text(''))
+                // PopupMenuButton(
+                //   offset: Offset(100, 100),
+                //   icon: Icon(Icons.art_track),
+                //   onSelected: (val) {
+                //     showAlertDialog(context, val);
+                //   },
+                //   itemBuilder: (context) => species.map((speciesName) =>
+                //     PopupMenuItem(
+                //       value: speciesName,
+                //       child: Text(speciesName)
+                //     )
+                //   ).toList()
+                // ),
               ],
             ),
           ),
