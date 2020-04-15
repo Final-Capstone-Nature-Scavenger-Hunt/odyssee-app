@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -34,31 +36,30 @@ class _GameMapState extends State<GameMap> {
   OverlayEntry _trailsOverlayEntry;
 
   LocationData currentLocation;
+  LatLng currentLatLng;
   LocationData destinationLocation;
   Location location;
 
-  BitmapDescriptor personalIcon;
   BitmapDescriptor sourceIcon;
   BitmapDescriptor destinationIcon;
 
-  void setPersonalIcon() async {
+  void setSourceIcon() async {
     sourceIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2), 'assets/icons/hiking-solid-small.png');
+        ImageConfiguration(devicePixelRatio: 2), 'assets/icons/origin-map-marker-small.png');
   }
 
-  void setSourceAndDestinationIcons() async {
-    sourceIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(devicePixelRatio: 2), 'assets/icons/hiking-solid-small.png');
+  void setDestinationIcons() async {
     destinationIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(size: Size(5,5)), 'assets/icons/flag-checkered-solid.png');
+        ImageConfiguration(devicePixelRatio: 2), 'assets/icons/end-map-marker-small.png');
   }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
 
-    setSourceAndDestinationIcons();
-    setPersonalIcon();
+    setDestinationIcons();
+    setSourceIcon();
   }
+
   @override
   void initState() {
     super.initState();
@@ -74,7 +75,7 @@ class _GameMapState extends State<GameMap> {
       // current user's position in real time,
       // so we're holding on to it
       currentLocation = cLoc;
-      LatLng latlng = LatLng(currentLocation.latitude, currentLocation.longitude);
+      currentLatLng = LatLng(currentLocation.latitude, currentLocation.longitude);
       
       currentElevation = currentLocation.altitude;
       updateElevation();
@@ -84,6 +85,7 @@ class _GameMapState extends State<GameMap> {
       //   position: latlng,
       //   icon: personalIcon,
       // ));
+
     });
     // set the initial location
     setInitialLocation();
@@ -100,24 +102,26 @@ class _GameMapState extends State<GameMap> {
     //   position: latlng,
     //   icon: personalIcon,
     // ));
+
   }
 
   void showTrailPinsOnMap(List<LatLng> ppoints) {
 
+    _markers.clear();
+    
     _markers.add(Marker(
       markerId: MarkerId('sourcePin'),
       position: ppoints.first,
       icon: sourceIcon,
     ));
 
-//    _markers.add(Marker(
-//      markerId: MarkerId('destinationPin'),
-//      position: ppoints.last,
-//      icon: destinationIcon,
-//    ));
-
-    print(ppoints.first);
-    print(ppoints.last);
+    if (ppoints.first != ppoints.last) {
+        _markers.add(Marker(
+          markerId: MarkerId('destinationPin'),
+          position: ppoints.last,
+          icon: destinationIcon,
+        ));
+    }
   }
 
   void _onChangeTrail(String trailName, GoogleMapController controller){
@@ -146,15 +150,29 @@ class _GameMapState extends State<GameMap> {
     });
 
     showTrailPinsOnMap(polylinePoints);
+    print("Current Elevation: " + currentElevation.toString());
+//    LatLng currentLatLng = LatLng(currentLocation.latitude, currentLocation.longitude);
+    LatLng mid = MapHelpers.calcLatLngMidpoint(currentLatLng, polylinePoints[0]);
+    LatLng max = MapHelpers.maxDistLatLng(currentLatLng, polylinePoints);
+    double dist = MapHelpers.calcDistance(currentLatLng, max);
+    print("Distance is $dist");
+    double zoomLevel = MapHelpers.getZoomLevel(dist);
+    print("Zoom Level: $zoomLevel");
 
-    // pan to the new position of the trail
+//    LatLng maxLatLng = MapHelpers.maxDistLatLng(currentLatLng, polylinePoints);
+//    LatLng sw = MapHelpers.getSW(currentLatLng, maxLatLng);
+//    LatLng ne = MapHelpers.getNE(currentLatLng, maxLatLng);
+//    LatLngBounds bounds = LatLngBounds(southwest: sw, northeast: ne);
+
+    // pan to the midpoint between the trailhead and the users position
     CameraPosition cPosition = CameraPosition(
-      zoom: 16.0,
-      target: polylinePoints[0],
+      zoom: zoomLevel,
+      target: mid,
     );
+
     mapController.animateCamera(CameraUpdate.newCameraPosition(cPosition));
-
-
+//    mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 0));
+//    mapController.animateCamera()
   }
 
   void updateElevation(){
@@ -250,7 +268,6 @@ class _GameMapState extends State<GameMap> {
         ),
       barrierDismissible: false
       );
-
   }
 
   void chooseSpecies(BuildContext context){
@@ -300,7 +317,6 @@ class _GameMapState extends State<GameMap> {
     final user = Provider.of<User>(context);
     
     List<Widget> stackChildren = [];
-
     stackChildren.add( 
       GoogleMap(
               polylines: _polyline,
@@ -351,6 +367,25 @@ class _GameMapState extends State<GameMap> {
       MapHelpers().getCurrentScore(user)
     );
 
+//    stackChildren.add(
+//        Align(
+//          child: Container(
+//            decoration: BoxDecoration(
+//                color: Colors.white,
+//                border: Border.all(width:2, color: Color(0xFF194000))
+//            ),
+//            child: Text("Select a Trail",
+//              style: TextStyle(
+//                color: Color(0xFF194000),
+////            backgroundColor : Colors.white,
+//                fontWeight: FontWeight.bold,
+//              ),
+//            ),
+//          ),
+//          alignment: Alignment(-0.70, 0.87),
+//        ),
+//    );
+
     return MaterialApp(
       home: Scaffold(
           backgroundColor: Colors.transparent,
@@ -377,6 +412,36 @@ class _GameMapState extends State<GameMap> {
                   icon: Icon(Icons.map),
                   //heroTag: null,
                 ),
+                  onSelected: (val) { _onChangeTrail(val, mapController);} ,
+                  itemBuilder:
+                    (context) => (TrailData.trailMap.keys.map((trail) =>
+                    PopupMenuItem(
+                        value: trail,
+                        height: 70,
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                            child: Text(trail,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),),
+                            ),
+                            Expanded(
+                            child: Image.asset("assets/icons/"
+                            + TrailData.trailMap[trail]['type'] + "_"
+                            + TrailData.trailMap[trail]['difficulty'] + ".png",
+                            scale: 20,),
+                            ),
+                            Expanded(
+                              child: Text(TrailData.trailMap[trail]['climate'],
+                                style: TextStyle(
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                    )).toList())),
                 FloatingActionButton(
                   elevation: 5.0,
                   foregroundColor: Color(0xFFE5D9A5),
