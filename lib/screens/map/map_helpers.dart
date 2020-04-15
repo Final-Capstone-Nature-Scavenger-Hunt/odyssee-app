@@ -172,7 +172,7 @@ class MapHelpers {
           ),
         ),
       ),
-      alignment: Alignment(0.0, -0.95),
+      alignment: Alignment(-0.90, -0.8),
     );
   }
 

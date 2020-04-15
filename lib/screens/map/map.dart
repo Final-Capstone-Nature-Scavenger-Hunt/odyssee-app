@@ -344,7 +344,10 @@ class _GameMapState extends State<GameMap> {
                         child: Row(
                           children: <Widget>[
                             Expanded(
-                            child: Text(trail),
+                            child: Text(trail,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),),
                             ),
                             Expanded(
                             child: Image.asset("assets/icons/"
@@ -353,29 +356,15 @@ class _GameMapState extends State<GameMap> {
                             scale: 20,),
                             ),
                             Expanded(
-                              child: InkWell(
-                                child: Text('Alpine',
-                                  style: TextStyle(
-                                  color: MapHelpers.zoneColors('Alpine'),
-                                  backgroundColor : Colors.white,
-                                  fontWeight: FontWeight.bold
+                              child: Text(TrailData.trailMap[trail]['climate'],
+                                style: TextStyle(
+                                  fontSize: 10,
+                                ),
                               ),
-                            ),
-                    ),
                             ),
                           ],
                         ),
-                    )
-                    ).toList())),
-//                FloatingActionButton(
-//                  elevation: 5.0,
-//                  foregroundColor: Color(0xFFE5D9A5),
-//                  backgroundColor: Color(0xEF194000),
-//                  child: new Icon(Icons.map, size: 45.0,),
-//                  onPressed: () => Navigator.push(context,
-//                      MaterialPageRoute(builder: (context) => TrailTable(currentLatLng)),
-//                  ),
-//                ),
+                    )).toList())),
                 FloatingActionButton(
                   elevation: 5.0,
                   foregroundColor: Color(0xFFE5D9A5),
