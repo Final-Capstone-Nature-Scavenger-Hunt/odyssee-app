@@ -10,7 +10,6 @@ import 'package:odyssee/screens/classification/classification.dart';
 import 'package:odyssee/screens/map/map_helpers.dart';
 import 'package:odyssee/shared/header_nav.dart';
 import 'package:odyssee/shared/styles.dart';
-import 'package:path/path.dart';
 
 class GameMap extends StatefulWidget {
   @override
@@ -34,6 +33,7 @@ class _GameMapState extends State<GameMap> {
   OverlayEntry _overlayEntry;
 
   LocationData currentLocation;
+  LatLng currentLatLng;
   LocationData destinationLocation;
   Location location;
 
@@ -72,7 +72,7 @@ class _GameMapState extends State<GameMap> {
       // current user's position in real time,
       // so we're holding on to it
       currentLocation = cLoc;
-      LatLng latlng = LatLng(currentLocation.latitude, currentLocation.longitude);
+      currentLatLng = LatLng(currentLocation.latitude, currentLocation.longitude);
       
       currentElevation = currentLocation.altitude;
       updateElevation();
@@ -134,8 +134,8 @@ class _GameMapState extends State<GameMap> {
     });
 
     showTrailPinsOnMap(polylinePoints);
-
-    LatLng currentLatLng = LatLng(currentLocation.latitude, currentLocation.longitude);
+    print("Current Elevation: " + currentElevation.toString());
+//    LatLng currentLatLng = LatLng(currentLocation.latitude, currentLocation.longitude);
     LatLng mid = MapHelpers.calcLatLngMidpoint(currentLatLng, polylinePoints[0]);
     LatLng max = MapHelpers.maxDistLatLng(currentLatLng, polylinePoints);
     double dist = MapHelpers.calcDistance(currentLatLng, max);
@@ -247,15 +247,11 @@ class _GameMapState extends State<GameMap> {
         ),
       barrierDismissible: false
       );
-
   }
 
   @override
   Widget build(BuildContext context) {
-
-
     List<Widget> stackChildren = [];
-
     stackChildren.add( 
       GoogleMap(
               polylines: _polyline,
@@ -300,6 +296,25 @@ class _GameMapState extends State<GameMap> {
       MapHelpers().zoneWidget(currentElevation)
     );
 
+//    stackChildren.add(
+//        Align(
+//          child: Container(
+//            decoration: BoxDecoration(
+//                color: Colors.white,
+//                border: Border.all(width:2, color: Color(0xFF194000))
+//            ),
+//            child: Text("Select a Trail",
+//              style: TextStyle(
+//                color: Color(0xFF194000),
+////            backgroundColor : Colors.white,
+//                fontWeight: FontWeight.bold,
+//              ),
+//            ),
+//          ),
+//          alignment: Alignment(-0.70, 0.87),
+//        ),
+//    );
+
     return MaterialApp(
       home: Scaffold(
           backgroundColor: Colors.transparent,
@@ -321,13 +336,46 @@ class _GameMapState extends State<GameMap> {
                   offset: Offset(100, 100),
                   icon: Icon(Icons.map),
                   onSelected: (val) { _onChangeTrail(val, mapController);} ,
-                  itemBuilder: (context) => TrailData.trailMap.keys.map((trail) =>
+                  itemBuilder:
+                    (context) => (TrailData.trailMap.keys.map((trail) =>
                     PopupMenuItem(
                         value: trail,
-                        child: Text(trail)
+                        height: 70,
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                            child: Text(trail),
+                            ),
+                            Expanded(
+                            child: Image.asset("assets/icons/"
+                            + TrailData.trailMap[trail]['type'] + "_"
+                            + TrailData.trailMap[trail]['difficulty'] + ".png",
+                            scale: 20,),
+                            ),
+                            Expanded(
+                              child: InkWell(
+                                child: Text('Alpine',
+                                  style: TextStyle(
+                                  color: MapHelpers.zoneColors('Alpine'),
+                                  backgroundColor : Colors.white,
+                                  fontWeight: FontWeight.bold
+                              ),
+                            ),
+                    ),
+                            ),
+                          ],
+                        ),
                     )
-                    ).toList(),
-                  ),
+                    ).toList())),
+//                FloatingActionButton(
+//                  elevation: 5.0,
+//                  foregroundColor: Color(0xFFE5D9A5),
+//                  backgroundColor: Color(0xEF194000),
+//                  child: new Icon(Icons.map, size: 45.0,),
+//                  onPressed: () => Navigator.push(context,
+//                      MaterialPageRoute(builder: (context) => TrailTable(currentLatLng)),
+//                  ),
+//                ),
                 FloatingActionButton(
                   elevation: 5.0,
                   foregroundColor: Color(0xFFE5D9A5),

@@ -140,7 +140,7 @@ class MapHelpers {
     else return 'Unknown';
   }
 
-  Color zoneColors (String zoneName){
+  static Color zoneColors (String zoneName){
     switch(zoneName){
       case 'Foothills': return  Colors.green[400];
 
@@ -158,22 +158,24 @@ class MapHelpers {
 
   Widget zoneWidget (double elevation){
     String zoneName = currentZone(elevation);
-    return Positioned(
-      child: InkWell(
-        child: Text(zoneName,
+    return Align(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(width:2, color: Color(0xFF194000))
+        ),
+        child: Text("Current Climate:\n" + zoneName,
           style: TextStyle(
             color: zoneColors(zoneName),
-            backgroundColor : Colors.white,
-            fontWeight: FontWeight.bold
+//            backgroundColor : Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      left: 15,
-      top: 30,
-      height: 60,
-      width: 60,
+      alignment: Alignment(0.0, -0.95),
     );
   }
-  
+
+
 
 }
