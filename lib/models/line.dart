@@ -17,6 +17,8 @@ class Line {
   }
 
   List<String> get species {
-    return TrailData.trailMap[trailName]['species'];
+    List<String> speciesList = TrailData.trailMap[trailName]['species'];
+    speciesList.sort((a,b)=> a.toLowerCase().compareTo(b.toLowerCase()));
+    return speciesList;
   }
 }
