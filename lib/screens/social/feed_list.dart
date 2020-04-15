@@ -1,6 +1,9 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:odyssee/data/user_images.dart';
 import 'package:odyssee/models/post.dart';
 import 'package:odyssee/screens/social/feed_item.dart';
+import 'package:odyssee/shared/loading.dart';
 import 'package:provider/provider.dart';
 
 
@@ -45,7 +48,7 @@ class _FeedListState extends State<FeedList> {
                   )
                 ),
                 SizedBox(height: 10.0,),
-                imageContainer,
+                _imageContainer(post),
 
               ],
             ),
@@ -89,10 +92,57 @@ class _FeedListState extends State<FeedList> {
   }
 
   Widget _itemThumbNail(Post post){
+    String postImage;
+    String postName = post.owner;
+
+    if (postName.toLowerCase().contains('brian')){
+      postImage = UserImages.imageLinks['brian'];
+    }
+    else if (postName.toLowerCase().contains('tucker')){
+      postImage = UserImages.imageLinks['tucker'];
+    }
+    else if (postName.toLowerCase().contains('gordon')){
+      postImage = UserImages.imageLinks['gordon'];
+    }
+    else if (postName.toLowerCase().contains('deb')){
+      postImage = UserImages.imageLinks['debalina'];
+    }
+    else if (postName.toLowerCase().contains('tree')){
+      postImage = UserImages.imageLinks['tree'];
+    }
+    else {
+      postImage = UserImages.imageLinks['default'];
+    }
     return Container(
       //constraints: BoxConstraints.tightFor(width:50),
       child: CircleAvatar(
-        backgroundImage: NetworkImage(post.ownerImageLink) )
+        backgroundImage: NetworkImage(postImage) )
     );
+  }
+
+  Future _getFirebaseImageURL (String storagePath) async {
+    final ref = FirebaseStorage.instance.ref().child(storagePath);
+    return await ref.getDownloadURL();
+  }
+
+  Widget _imageContainer (Post post){
+    return FutureBuilder(
+      future: _getFirebaseImageURL(post.imagePath),
+      builder: (context, snapshot){
+        if (snapshot.connectionState == ConnectionState.none && snapshot.hasData == null){
+          return Loading();
+        } else if (snapshot.hasError){
+          return Text('Error Loading data');
+        }else if (snapshot.hasData){
+          return Container(
+              constraints : BoxConstraints.tightFor(height:150),
+              child : Image.network(snapshot.data ,fit: BoxFit.fitWidth)
+              );
+        } else if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == null){
+          return Loading();
+        }
+        else return Container();
+      }
+      );
   }
 }

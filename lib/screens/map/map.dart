@@ -79,11 +79,11 @@ class _GameMapState extends State<GameMap> {
       currentElevation = currentLocation.altitude;
       updateElevation();
 
-      _markers.add(Marker(
-        markerId: MarkerId('personalPin'),
-        position: latlng,
-        icon: personalIcon,
-      ));
+      // _markers.add(Marker(
+      //   markerId: MarkerId('personalPin'),
+      //   position: latlng,
+      //   icon: personalIcon,
+      // ));
     });
     // set the initial location
     setInitialLocation();
@@ -95,11 +95,11 @@ class _GameMapState extends State<GameMap> {
     currentLocation = await location.getLocation();
 
     LatLng latlng = LatLng(currentLocation.latitude, currentLocation.longitude);
-    _markers.add(Marker(
-      markerId: MarkerId('personalPin'),
-      position: latlng,
-      icon: personalIcon,
-    ));
+    // _markers.add(Marker(
+    //   markerId: MarkerId('personalPin'),
+    //   position: latlng,
+    //   icon: personalIcon,
+    // ));
   }
 
   void showTrailPinsOnMap(List<LatLng> ppoints) {
@@ -220,7 +220,7 @@ class _GameMapState extends State<GameMap> {
   void chooseTrail(BuildContext context, mapController){
     Widget okButton = FlatButton(
       child: Text("CANCEL"),
-      onPressed: () => Navigator.of(context).pop(),
+      onPressed: () => Navigator.of(context, rootNavigator: true).pop('dialog'),
     );
 
     showDialog(
@@ -256,7 +256,7 @@ class _GameMapState extends State<GameMap> {
   void chooseSpecies(BuildContext context){
     Widget okButton = FlatButton(
       child: Text(species.isEmpty ? "OK" : "CANCEL"),
-      onPressed: () => Navigator.of(context).pop(),
+      onPressed: () => Navigator.of(context, rootNavigator: true).pop('dialog'),
     );
 
     Widget dialogContent = species.isEmpty ? Text('Please select a Trail first') : 
@@ -335,8 +335,8 @@ class _GameMapState extends State<GameMap> {
           ),
         right: 15,
         bottom: 90,
-        height: 50,
-        width: 50,
+        height: 70,
+        width: 70,
       ));
     }
 

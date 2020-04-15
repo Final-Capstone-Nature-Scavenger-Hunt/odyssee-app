@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:odyssee/data/user_images.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:odyssee/screens/achievements/achievements.dart';
 import 'package:odyssee/screens/collection/collection.dart';
@@ -48,6 +49,28 @@ class BaseDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final user = Provider.of<User>(context);
+
+    String userImage;
+    String postName = user.displayName;
+
+    if (postName.toLowerCase().contains('brian')){
+      userImage = UserImages.imageLinks['brian'];
+    }
+    else if (postName.toLowerCase().contains('tucker')){
+      userImage = UserImages.imageLinks['tucker'];
+    }
+    else if (postName.toLowerCase().contains('gordon')){
+      userImage = UserImages.imageLinks['gordon'];
+    }
+    else if (postName.toLowerCase().contains('deb')){
+      userImage = UserImages.imageLinks['debalina'];
+    }
+    else if (postName.toLowerCase().contains('tree')){
+      userImage = UserImages.imageLinks['tree'];
+    }
+    else {
+      userImage = UserImages.imageLinks['default'];
+    }
     
     return Drawer(
       elevation: 15.0,
@@ -68,7 +91,8 @@ class BaseDrawer extends StatelessWidget {
                     image: AssetImage("assets/images/drawer_background.jpg"), fit: BoxFit.cover)
             ),
             currentAccountPicture: CircleAvatar(
-              backgroundColor: Color(0xFFE5D9A5),
+              backgroundImage: NetworkImage(userImage)
+              //backgroundColor: Color(0xFFE5D9A5),
 //                    child: Text(
 //                      'Account Placeholder',
 //                      style: TextStyle(

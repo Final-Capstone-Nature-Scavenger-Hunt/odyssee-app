@@ -35,8 +35,8 @@ class MapHelpers {
   }
 
   String currentZone(double elevation){
-    if(elevation < 1800) return 'Unknown';
-    else if (elevation >= 1800 && elevation<3000){
+    
+    if (elevation >= 1800 && elevation<3000){
       return 'Foothills';
     }
     else if (elevation < 6000){
