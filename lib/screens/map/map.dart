@@ -4,10 +4,12 @@ import 'package:location/location.dart';
 import 'package:odyssee/data/hunt_data.dart';
 import 'package:odyssee/models/line.dart';
 import 'package:odyssee/data/trails.dart';
+import 'package:odyssee/models/user.dart';
 import 'package:odyssee/screens/classification/classification.dart';
 import 'package:odyssee/screens/map/map_helpers.dart';
 import 'package:odyssee/shared/header_nav.dart';
 import 'package:odyssee/shared/styles.dart';
+import 'package:provider/provider.dart';
 
 class GameMap extends StatefulWidget {
   @override
@@ -248,7 +250,8 @@ class _GameMapState extends State<GameMap> {
   @override
   Widget build(BuildContext context) {
 
-
+    final user = Provider.of<User>(context);
+    
     List<Widget> stackChildren = [];
 
     stackChildren.add( 
@@ -297,6 +300,10 @@ class _GameMapState extends State<GameMap> {
     );
     }
 
+    stackChildren.add(
+      MapHelpers().getCurrentScore(user)
+    );
+
     return MaterialApp(
       home: Scaffold(
           backgroundColor: Colors.transparent,
@@ -330,11 +337,19 @@ class _GameMapState extends State<GameMap> {
                   foregroundColor: Color(0xFFE5D9A5),
                   backgroundColor: Color(0xEF194000),
                   child: new Icon(Icons.camera_alt, size: 45.0,),
-                  onPressed: () => Navigator.push(context, 
+                  onPressed: () {
+                    if (selectedSpecies == null){
+                      MapHelpers.showNoClassSelectAlertDialog(context);
+                      return null;
+                    }
+                    else{
+                    return Navigator.push(context, 
                             MaterialPageRoute(builder: (context) => 
                               ClassifyImage( predictedClass : selectedSpecies)
                               )
-                            ),
+                            );
+                  }
+                  },
                 ),
                 PopupMenuButton(
                   offset: Offset(100, 100),

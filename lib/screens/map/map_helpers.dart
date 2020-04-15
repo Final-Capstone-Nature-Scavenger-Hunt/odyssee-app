@@ -1,4 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:odyssee/models/game.dart';
+import 'package:odyssee/models/user.dart';
+import 'package:odyssee/services/database.dart';
 
 class MapHelpers {
   
@@ -82,6 +86,57 @@ class MapHelpers {
       height: 60,
       width: 200,
     );
+  }
+
+  Widget getCurrentScore(User user){
+    //print(user.uid);
+    return StreamBuilder<DocumentSnapshot>(
+      stream: DatabaseService(uid: user.uid).userGameData,
+      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        String score;
+        //print(snapshot.data);
+          if (snapshot.hasData) {
+            score = snapshot.data['Score'].toString();
+          }
+          else {
+            score = 'Loading....';
+          }
+          return  Positioned(
+                    child: InkWell(
+                      child: Text("My Score: $score",
+                        style: TextStyle(
+                          color: Colors.yellow[800],
+                          backgroundColor : Colors.white,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                    left: 15,
+                    top: 60,
+                    height: 60,
+                    width: 100,
+                  );
+      });
+  }
+
+  static void showNoClassSelectAlertDialog(BuildContext context){
+
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("No Species Selected!"),
+        content: Text("Please selected a trail and species using the buttons below before proceeding"),
+        actions: <Widget>[ okButton],
+        elevation: 24.0,
+        ),
+      barrierDismissible: false
+      );
+
   }
   
 

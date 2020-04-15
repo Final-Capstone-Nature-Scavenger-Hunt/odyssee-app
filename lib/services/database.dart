@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:odyssee/models/game.dart';
 import 'package:odyssee/models/post.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:odyssee/services/storage.dart';
@@ -149,6 +150,24 @@ class DatabaseService {
       'FoundItems': FieldValue.arrayUnion([foundItem]),
       'Score': FieldValue.increment(score)
     });
+  }
+
+  GameData _gameDataFromFirebase(DocumentSnapshot snapshot){
+    
+    return GameData(
+      achievements: snapshot.data['Achievements'],
+      score: snapshot.data['Score'],
+      foundItems: snapshot.data['FoundItems'] );
+  }
+
+  // Stream<GameData> get userGameData {
+  //   final DocumentReference achievementsCollection = Firestore.instance.collection('userGameData').document(uid);
+  //   return achievementsCollection.snapshots().map(_gameDataFromFirebase);
+  // }
+
+    Stream<DocumentSnapshot> get userGameData {
+    final DocumentReference achievementsCollection = Firestore.instance.collection('userGameData').document(uid);
+    return achievementsCollection.snapshots();
   }
 
 }
