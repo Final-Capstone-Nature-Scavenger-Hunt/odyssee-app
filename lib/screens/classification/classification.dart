@@ -204,7 +204,7 @@ class _ClassifyImageState extends State<ClassifyImage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           FloatingActionButton(
-            backgroundColor: Styles.buttonColor,
+            backgroundColor: Colors.brown,
             onPressed: () async {
               predictImagePicker(user.uid, false );
             },
@@ -214,7 +214,7 @@ class _ClassifyImageState extends State<ClassifyImage> {
           ),
           SizedBox(height: 5.0),
           FloatingActionButton(
-            backgroundColor: Styles.buttonColor,
+            backgroundColor: Colors.brown,
             onPressed: () async {
               predictImagePicker(user.uid, true);
             },

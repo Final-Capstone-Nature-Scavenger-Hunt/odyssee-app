@@ -127,7 +127,6 @@ class _HuntScreenState extends State<HuntScreen> {
   @override
   Widget build(BuildContext context) {
 
-    //print(newAchievements);
     final user = Provider.of<User>(context);
 
 
@@ -177,6 +176,8 @@ List<Widget> _renderFacts (BuildContext context, HuntItem huntItem, user, foundI
   //result.add(_sectionTitle('Hint'));
   result.add(_sectionText(huntItem.hint));
   result.add(SizedBox(height: 20.0));
+  result.add(_addHuntDetails(huntItem));
+  result.add(SizedBox(height: 10.0));
 
   if (!posted){
     result.add(_postItemButton(huntItem.huntName, foundImage, user));
@@ -216,6 +217,70 @@ Widget _bannerImage( String imageFile, double height){
     constraints : BoxConstraints.tightFor(height:height),
     child : Image.asset(imageFile, fit: BoxFit.fitWidth)
   );
+}
+
+Widget _addHuntDetails(HuntItem huntItem){
+  List<Widget> rowChildren = [];
+
+  rowChildren.add(
+    detailsIcon('Rarity Score', value: huntItem.rarityScore.toString())
+  );
+
+  if (huntItem.carbonHungry==1.0){
+    rowChildren.add(detailsIcon("Carbon Hungry"));
+  }
+  if (huntItem.endemic==1.0){
+    rowChildren.add(detailsIcon("Endemic"));
+  }
+  if (huntItem.decomposer==1.0){
+    rowChildren.add(detailsIcon("Decomposer"));
+  }
+  if (huntItem.predator==1.0){
+    rowChildren.add(detailsIcon("Predator"));
+  }
+  if (huntItem.scavenger==1.0){
+    rowChildren.add(detailsIcon("Scavenger"));
+  }
+  return Container(
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: rowChildren,
+    ),
+  );
+}
+
+Widget detailsIcon(String detailText, {String value ="Yes"}){
+  return Container(
+    padding: EdgeInsets.symmetric(horizontal:1.0),
+    decoration: BoxDecoration(
+      color: detailColor(detailText),
+      border: Border.all(
+      color: detailColor(detailText),
+    ),
+    borderRadius: BorderRadius.all(Radius.circular(20))
+  
+    ),
+    child: Text("$detailText: $value",
+      style: TextStyle(
+        //backgroundColor: detailColor(detailText),
+        fontSize: 14.0,
+        color: Colors.white,
+        fontWeight: FontWeight.bold
+        ),
+    ),
+  );
+}
+
+Color detailColor(String detailText){
+  switch (detailText){
+    case 'Carbon Hungry': return Colors.black;
+    case 'Endemic': return Colors.green;
+    case 'Decomposer': return Colors.brown;
+    case 'Predator': return Colors.red[400];
+    case 'Scavenger': return Colors.grey;
+    case 'Rarity Score': return Colors.yellow[800];
+    default: return Colors.blue;
+  }
 }
 
 Widget _postItemButton( String huntName, image, user) {
