@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:odyssee/models/user.dart';
 import 'package:odyssee/screens/achievements/achievements.dart';
 import 'package:odyssee/screens/collection/collection.dart';
 import 'package:odyssee/screens/authenticate/authenticate.dart';
 import 'package:odyssee/screens/social/feed.dart';
+import 'package:odyssee/screens/social/users_to_follow.dart';
 import 'package:odyssee/screens/start/start_menu.dart';
+import 'package:odyssee/services/auth.dart';
+import 'package:provider/provider.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget{
   final Text title;
@@ -42,6 +46,9 @@ class BaseDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final user = Provider.of<User>(context);
+    
     return Drawer(
       elevation: 15.0,
       child: Container(color: Color(0xDD194000),
@@ -49,7 +56,7 @@ class BaseDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text("Placeholder name",
+            accountName: Text(user.displayName,
               style: TextStyle(
                 color: Color(0xFFE5D9A5),
                 fontSize: 25,
@@ -82,11 +89,11 @@ class BaseDrawer extends StatelessWidget {
             ),
             child: ListTile(
               leading: Icon(
-                  Icons.group,
+                  Icons.library_books,
                   size: 32,
                   color: Color(0xFFE5D9A5)
               ),
-              title: Text('Social',
+              title: Text('My Feed',
                 style: TextStyle(
                     fontSize: 20,
                     color: Color(0xFFE5D9A5)
@@ -96,6 +103,35 @@ class BaseDrawer extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Feed()),
+                );
+              },
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+              border: Border(
+//                top: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                left: BorderSide(width: 1.0, color: Color(0xFFFFFFFFFF)),
+//                right: BorderSide(width: 1.0, color: Color(0xFFFF000000)),
+                bottom: BorderSide(width: 1.0, color: Color(0xFFE86935)),
+              ),
+            ),
+            child: ListTile(
+              leading: Icon(
+                  Icons.group,
+                  size: 32,
+                  color: Color(0xFFE5D9A5)
+              ),
+              title: Text('Follow',
+                style: TextStyle(
+                    fontSize: 20,
+                    color: Color(0xFFE5D9A5)
+                ),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FollowUsers()),
                 );
               },
             ),
@@ -208,12 +244,7 @@ class BaseDrawer extends StatelessWidget {
                     color: Color(0xFFE5D9A5)
                 ),
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Authenticate()),
-                );
-              },
+              onTap: () async => AuthService().signOut(),
             ),
           ),
           ],
