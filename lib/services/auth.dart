@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -66,13 +65,13 @@ class AuthService {
 
       await user.updateProfile(updateInfo);
 
-      User customUser = _userFromFirebase(user);
+      //User customUser = _userFromFirebase(user);
 
       // create a new document for the user with the uid
-      DatabaseService dbservice =  DatabaseService( uid : user.uid, user : customUser);
+      //DatabaseService dbservice =  DatabaseService( uid : user.uid, user : customUser);
 
       // create a followers document
-      await dbservice.createfollowersDocument(displayName);
+      //await dbservice.createfollowersDocument(displayName);
 
       // create a profile document
       //await dbservice.createProfileDocument(about);
@@ -84,10 +83,6 @@ class AuthService {
       print(e.message);
       return null;
     }
-  }
-
-  Future addProfileData () async {
-
   }
 
   //sign out

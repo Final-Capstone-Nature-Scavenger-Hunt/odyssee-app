@@ -21,7 +21,7 @@ class _FeedState extends State<Feed> {
       value: DatabaseService(uid: user.uid).posts,
       child: Scaffold(
           appBar: BaseAppBar(
-            title: Text('Social Feed'),
+            title: Text('The Herd'),
             appBar: AppBar(),
           ),
           drawer: BaseDrawer(),

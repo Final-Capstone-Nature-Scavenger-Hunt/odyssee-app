@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:odyssee/data/user_images.dart';
 import 'package:odyssee/mocks/mock_users.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:odyssee/services/functions.dart';
@@ -77,10 +78,31 @@ class UsersList extends StatelessWidget {
   }
 
   Widget _itemThumbNail(User user){
+    String userImage;
+    String postName = user.displayName;
+
+    if (postName.toLowerCase().contains('brian')){
+      userImage = UserImages.imageLinks['brian'];
+    }
+    else if (postName.toLowerCase().contains('tucker')){
+      userImage = UserImages.imageLinks['tucker'];
+    }
+    else if (postName.toLowerCase().contains('gordon')){
+      userImage = UserImages.imageLinks['gordon'];
+    }
+    else if (postName.toLowerCase().contains('deb')){
+      userImage = UserImages.imageLinks['debalina'];
+    }
+    else if (postName.toLowerCase().contains('tree')){
+      userImage = UserImages.imageLinks['tree'];
+    }
+    else {
+      userImage = UserImages.imageLinks['default'];
+    }
     return Container(
       //constraints: BoxConstraints.tightFor(width:50),
       child: CircleAvatar(
-        backgroundImage: NetworkImage(user.photoURL) )
+        backgroundImage: NetworkImage(userImage) )
     );
   }
 

@@ -6,10 +6,12 @@ import 'package:location/location.dart';
 import 'package:odyssee/data/hunt_data.dart';
 import 'package:odyssee/models/line.dart';
 import 'package:odyssee/data/trails.dart';
+import 'package:odyssee/models/user.dart';
 import 'package:odyssee/screens/classification/classification.dart';
 import 'package:odyssee/screens/map/map_helpers.dart';
 import 'package:odyssee/shared/header_nav.dart';
 import 'package:odyssee/shared/styles.dart';
+import 'package:provider/provider.dart';
 
 class GameMap extends StatefulWidget {
   @override
@@ -31,6 +33,7 @@ class _GameMapState extends State<GameMap> {
   String selectedSpecies;
 
   OverlayEntry _overlayEntry;
+  OverlayEntry _trailsOverlayEntry;
 
   LocationData currentLocation;
   LatLng currentLatLng;
@@ -76,6 +79,13 @@ class _GameMapState extends State<GameMap> {
       
       currentElevation = currentLocation.altitude;
       updateElevation();
+
+      // _markers.add(Marker(
+      //   markerId: MarkerId('personalPin'),
+      //   position: latlng,
+      //   icon: personalIcon,
+      // ));
+
     });
     // set the initial location
     setInitialLocation();
@@ -87,6 +97,12 @@ class _GameMapState extends State<GameMap> {
     currentLocation = await location.getLocation();
 
     LatLng latlng = LatLng(currentLocation.latitude, currentLocation.longitude);
+    // _markers.add(Marker(
+    //   markerId: MarkerId('personalPin'),
+    //   position: latlng,
+    //   icon: personalIcon,
+    // ));
+
   }
 
   void showTrailPinsOnMap(List<LatLng> ppoints) {
@@ -219,30 +235,76 @@ class _GameMapState extends State<GameMap> {
     );
     }
 
-  //show alert dialog
-  void showAlertDialog(BuildContext context, String dropDownSelection){
-    Widget confirmButton = FlatButton(
-      child: Text("CONFIRM"),
-      onPressed : ()  {
-        print('Going to set the species');
-        setState(() {
-          selectedSpecies = dropDownSelection;
-        });
-        Navigator.of(context).pop();
-      }
-    );
-
-    Widget cancelButton = FlatButton(
+  void chooseTrail(BuildContext context, mapController){
+    Widget okButton = FlatButton(
       child: Text("CANCEL"),
-      onPressed: () => Navigator.of(context).pop(),
+      onPressed: () => Navigator.of(context, rootNavigator: true).pop('dialog'),
     );
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Confirm Your Selection"),
-        content: Text("Do you want to find the $dropDownSelection?"),
-        actions: <Widget>[ confirmButton , cancelButton],
+        title: Text("Select a Trail"),
+        content: ListView.builder(
+                  itemCount: TrailData.trailMap.keys.length,
+                  itemBuilder: (BuildContext context, int index){
+                    String trail = TrailData.trailMap.keys.toList()[index];
+                    String difficulty = TrailData.trailMap[trail]['difficulty'] ?? "Easy";
+
+                    return ListTile(
+                      title: Text(trail),
+                      trailing: Text(difficulty,
+                          style: TextStyle(color: Colors.grey[350], fontSize: 15.0 )),
+                      onTap: () { 
+                        _onChangeTrail(trail, mapController);
+                        Navigator.of(context).pop();
+                        },
+                      );
+                  },
+                  shrinkWrap: true,
+                ),
+        actions: <Widget>[ okButton],
+        elevation: 24.0,
+        ),
+      barrierDismissible: false
+      );
+  }
+
+  void chooseSpecies(BuildContext context){
+    Widget okButton = FlatButton(
+      child: Text(species.isEmpty ? "OK" : "CANCEL"),
+      onPressed: () => Navigator.of(context, rootNavigator: true).pop('dialog'),
+    );
+
+    Widget dialogContent = species.isEmpty ? Text('Please select a Trail first') : 
+                    ListView.builder(
+                  itemCount: species.length,
+                  itemBuilder: (BuildContext context, int index){
+                    String currentSpecies = species[index];
+                    print(currentSpecies);
+                    String difficulty = HuntData.huntMap[currentSpecies]['DifficultyLevel'];
+
+                    return ListTile(
+                      title: Text(currentSpecies),
+                      trailing: Text(difficulty,
+                          style: TextStyle(color: Colors.grey[350], fontSize: 15.0 )),
+                      onTap: () { 
+                          setState(() {
+                            selectedSpecies = currentSpecies;
+                          });
+                          Navigator.of(context).pop();
+                        },
+                      );
+                  },
+                  shrinkWrap: true,
+                );
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Select a Species"),
+        content: dialogContent,
+        actions: <Widget>[ okButton],
         elevation: 24.0,
         ),
       barrierDismissible: false
@@ -251,6 +313,9 @@ class _GameMapState extends State<GameMap> {
 
   @override
   Widget build(BuildContext context) {
+
+    final user = Provider.of<User>(context);
+    
     List<Widget> stackChildren = [];
     stackChildren.add( 
       GoogleMap(
@@ -287,13 +352,19 @@ class _GameMapState extends State<GameMap> {
           ),
         right: 15,
         bottom: 90,
-        height: 30,
-        width: 30,
+        height: 70,
+        width: 70,
       ));
     }
 
-    stackChildren.add(
+    if (currentElevation != null) {
+      stackChildren.add(
       MapHelpers().zoneWidget(currentElevation)
+    );
+    }
+
+    stackChildren.add(
+      MapHelpers().getCurrentScore(user)
     );
 
 //    stackChildren.add(
@@ -332,9 +403,15 @@ class _GameMapState extends State<GameMap> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                PopupMenuButton(
-                  offset: Offset(100, 100),
+                FlatButton.icon(
+                  label:Text(''),
+                  onPressed: () {
+                    chooseTrail(context, mapController);
+                  },
+                  //tooltip: 'Choose a Trail',
                   icon: Icon(Icons.map),
+                  //heroTag: null,
+                ),
                   onSelected: (val) { _onChangeTrail(val, mapController);} ,
                   itemBuilder:
                     (context) => (TrailData.trailMap.keys.map((trail) =>
@@ -370,25 +447,37 @@ class _GameMapState extends State<GameMap> {
                   foregroundColor: Color(0xFFE5D9A5),
                   backgroundColor: Color(0xEF194000),
                   child: new Icon(Icons.camera_alt, size: 45.0,),
-                  onPressed: () => Navigator.push(context, 
+                  onPressed: () {
+                    if (selectedSpecies == null){
+                      MapHelpers.showNoClassSelectAlertDialog(context);
+                      return null;
+                    }
+                    else{
+                    return Navigator.push(context, 
                             MaterialPageRoute(builder: (context) => 
                               ClassifyImage( predictedClass : selectedSpecies)
                               )
-                            ),
-                ),
-                PopupMenuButton(
-                  offset: Offset(100, 100),
-                  icon: Icon(Icons.art_track),
-                  onSelected: (val) {
-                    showAlertDialog(context, val);
+                            );
+                  }
                   },
-                  itemBuilder: (context) => species.map((speciesName) =>
-                    PopupMenuItem(
-                      value: speciesName,
-                      child: Text(speciesName)
-                    )
-                  ).toList()
                 ),
+                FlatButton.icon(
+                  onPressed: () => chooseSpecies(context), 
+                  icon: Icon(Icons.art_track), 
+                  label: Text(''))
+                // PopupMenuButton(
+                //   offset: Offset(100, 100),
+                //   icon: Icon(Icons.art_track),
+                //   onSelected: (val) {
+                //     showAlertDialog(context, val);
+                //   },
+                //   itemBuilder: (context) => species.map((speciesName) =>
+                //     PopupMenuItem(
+                //       value: speciesName,
+                //       child: Text(speciesName)
+                //     )
+                //   ).toList()
+                // ),
               ],
             ),
           ),

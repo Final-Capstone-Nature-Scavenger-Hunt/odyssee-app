@@ -30,7 +30,6 @@ class _ClassifyImageState extends State<ClassifyImage> {
   double _imageHeight;
   double _imageWidth;
   bool _busy = false;
-  //String predictedClass;
   bool findStatus = false;
 
   Future predictImagePicker(String uid, bool fromCamera) async {
@@ -128,17 +127,6 @@ class _ClassifyImageState extends State<ClassifyImage> {
 
     List<Widget> belowImageWidgets = [
 
-      // DropdownButtonFormField(
-      //   value: predictedClass ?? huntNames[0],
-      //   items: huntNames.map((huntName) => 
-      //   DropdownMenuItem(
-      //     child: Text(huntName),
-      //     value: huntName,
-      //   )
-      //   ).toList(),
-      //   onChanged: (val) => setState(() => predictedClass = val),
-      //   ),
-
       FlatButton(
         child: Text('Confirm Image',
                   style: TextStyle(
@@ -148,7 +136,7 @@ class _ClassifyImageState extends State<ClassifyImage> {
                   ),
         onPressed: () =>  ClassificationHelpers().confirmClassification(context, user, _recognitions, 
                                                                       widget.predictedClass, findStatus, _image),
-        color: Colors.teal[400]
+        color: Styles.buttonColor
         )
     ];
 
@@ -189,15 +177,6 @@ class _ClassifyImageState extends State<ClassifyImage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-//        leading: Builder(
-//          builder: (BuildContext context) {
-//            return IconButton(
-//              icon: const Icon(Icons.menu),
-//              onPressed: () { Scaffold.of(context).openDrawer(); },
-//              tooltip: MaterialLocalizations.of(context).openAppDrawerTooltip,
-//            );
-//          },
-//        ),
         title: Text('Image Classification'),
         centerTitle: true,
         backgroundColor: Color(0xFF194000),
@@ -225,6 +204,7 @@ class _ClassifyImageState extends State<ClassifyImage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           FloatingActionButton(
+            backgroundColor: Colors.brown,
             onPressed: () async {
               predictImagePicker(user.uid, false );
             },
@@ -234,6 +214,7 @@ class _ClassifyImageState extends State<ClassifyImage> {
           ),
           SizedBox(height: 5.0),
           FloatingActionButton(
+            backgroundColor: Colors.brown,
             onPressed: () async {
               predictImagePicker(user.uid, true);
             },

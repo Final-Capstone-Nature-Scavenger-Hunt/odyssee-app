@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:odyssee/models/game.dart';
 import 'package:odyssee/models/post.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:odyssee/services/storage.dart';
@@ -134,6 +135,39 @@ class DatabaseService {
     final CollectionReference followers = Firestore.instance.collection('followers');
     
     return followers.snapshots().map(_getUserFromFollowerDoc);
+  }
+
+  Future updateAchievements(String uid, String achievementName){
+     final CollectionReference achievementsCollection = Firestore.instance.collection('userGameData');
+     return achievementsCollection.document(uid).updateData({
+       'Achievements': FieldValue.arrayUnion([achievementName])
+     });
+  }
+
+  Future updateGameFindings(String foundItem, double score){
+    final CollectionReference achievementsCollection = Firestore.instance.collection('userGameData');
+    return achievementsCollection.document(uid).updateData({
+      'FoundItems': FieldValue.arrayUnion([foundItem]),
+      'Score': FieldValue.increment(score)
+    });
+  }
+
+  GameData _gameDataFromFirebase(DocumentSnapshot snapshot){
+    
+    return GameData(
+      achievements: snapshot.data['Achievements'],
+      score: snapshot.data['Score'],
+      foundItems: snapshot.data['FoundItems'] );
+  }
+
+  // Stream<GameData> get userGameData {
+  //   final DocumentReference achievementsCollection = Firestore.instance.collection('userGameData').document(uid);
+  //   return achievementsCollection.snapshots().map(_gameDataFromFirebase);
+  // }
+
+    Stream<DocumentSnapshot> get userGameData {
+    final DocumentReference achievementsCollection = Firestore.instance.collection('userGameData').document(uid);
+    return achievementsCollection.snapshots();
   }
 
 }

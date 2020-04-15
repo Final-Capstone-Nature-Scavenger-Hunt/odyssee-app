@@ -1,4 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:odyssee/data/trails.dart';
+import 'package:odyssee/models/game.dart';
+import 'package:odyssee/models/user.dart';
+import 'package:odyssee/services/database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart' as gm;
 import 'package:latlong/latlong.dart' as latlong;
 import 'dart:math';
@@ -122,6 +127,7 @@ class MapHelpers {
   }
 
   String currentZone(double elevation){
+    
     if (elevation >= 1800 && elevation<3000){
       return 'Foothills';
     }
@@ -164,7 +170,7 @@ class MapHelpers {
           color: Colors.white,
           border: Border.all(width:2, color: Color(0xFF194000))
         ),
-        child: Text("Current Climate:\n" + zoneName,
+        child: Text("Eco Zone: $zoneName",
           style: TextStyle(
             color: zoneColors(zoneName),
 //            backgroundColor : Colors.white,
@@ -172,10 +178,57 @@ class MapHelpers {
           ),
         ),
       ),
-      alignment: Alignment(-0.90, -0.8),
+            alignment: Alignment(-0.90, -0.8),
     );
   }
 
+  Widget getCurrentScore(User user){
+    //print(user.uid);
+    return StreamBuilder<DocumentSnapshot>(
+      stream: DatabaseService(uid: user.uid).userGameData,
+      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        String score;
+        //print(snapshot.data);
+          if (snapshot.hasData) {
+            score = snapshot.data['Score'].toString();
+          }
+          else {
+            score = 'Loading....';
+          }
+          return  Positioned(
+                    child: InkWell(
+                      child: Text("My Score: $score",
+                        style: TextStyle(
+                          color: Colors.yellow[800],
+                          backgroundColor : Colors.white,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                    left: 15,
+                    top: 60,
+                    height: 60,
+                    width: 100,
+                  );
+      });
+  }
 
+  static void showNoClassSelectAlertDialog(BuildContext context){
 
+    Widget okButton = FlatButton(
+      child: Text("OK"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("No Species Selected!"),
+        content: Text("Please selected a trail and species using the buttons below before proceeding"),
+        actions: <Widget>[ okButton],
+        elevation: 24.0,
+        ),
+      barrierDismissible: false
+      );
+  }
 }
