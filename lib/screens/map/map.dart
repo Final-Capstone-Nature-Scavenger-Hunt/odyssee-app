@@ -412,36 +412,6 @@ class _GameMapState extends State<GameMap> {
                   icon: Icon(Icons.map),
                   //heroTag: null,
                 ),
-                  onSelected: (val) { _onChangeTrail(val, mapController);} ,
-                  itemBuilder:
-                    (context) => (TrailData.trailMap.keys.map((trail) =>
-                    PopupMenuItem(
-                        value: trail,
-                        height: 70,
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                            child: Text(trail,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                ),),
-                            ),
-                            Expanded(
-                            child: Image.asset("assets/icons/"
-                            + TrailData.trailMap[trail]['type'] + "_"
-                            + TrailData.trailMap[trail]['difficulty'] + ".png",
-                            scale: 20,),
-                            ),
-                            Expanded(
-                              child: Text(TrailData.trailMap[trail]['climate'],
-                                style: TextStyle(
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                    )).toList())),
                 FloatingActionButton(
                   elevation: 5.0,
                   foregroundColor: Color(0xFFE5D9A5),
@@ -458,7 +428,7 @@ class _GameMapState extends State<GameMap> {
                               ClassifyImage( predictedClass : selectedSpecies)
                               )
                             );
-                  }
+                    }
                   },
                 ),
                 FlatButton.icon(

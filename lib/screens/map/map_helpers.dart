@@ -195,21 +195,22 @@ class MapHelpers {
           else {
             score = 'Loading....';
           }
-          return  Positioned(
-                    child: InkWell(
+          return  Align(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(width:2, color: Color(0xFFE86935))
+                      ),
                       child: Text("My Score: $score",
                         style: TextStyle(
-                          color: Colors.yellow[800],
+                          color: Color(0xFFE86935),
                           backgroundColor : Colors.white,
                           fontWeight: FontWeight.bold
                         ),
                       ),
                     ),
-                    left: 15,
-                    top: 60,
-                    height: 60,
-                    width: 100,
-                  );
+            alignment: Alignment(-0.90, -0.72),
+          );
       });
   }
 
