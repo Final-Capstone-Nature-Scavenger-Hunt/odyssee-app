@@ -16,3 +16,18 @@ class Loading extends StatelessWidget {
     );
   }
 }
+
+
+class BareLoading extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Center(
+        child: SpinKitChasingDots(
+          color: Color(0xFFE86935),
+          size: 50.0
+          ),
+        )
+    );
+  }
+}

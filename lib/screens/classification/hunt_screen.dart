@@ -7,6 +7,7 @@ import 'package:odyssee/data/achievements.dart';
 import 'package:odyssee/screens/classification/achievements_updater.dart';
 import 'package:odyssee/services/database.dart';
 import 'package:odyssee/shared/constants.dart';
+import 'package:odyssee/shared/loading.dart';
 import 'package:odyssee/shared/styles.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,7 @@ class HuntScreen extends StatefulWidget {
 class _HuntScreenState extends State<HuntScreen> {
 
   bool posted = false;
+  bool postingIO = false;
   List<String> newAchievements;
   OverlayEntry _overlayEntry;
 
@@ -179,11 +181,13 @@ List<Widget> _renderFacts (BuildContext context, HuntItem huntItem, user, foundI
   result.add(_addHuntDetails(huntItem));
   result.add(SizedBox(height: 10.0));
 
-  if (!posted){
-    result.add(_postItemButton(huntItem.huntName, foundImage, user));
-  }else {
+  if (posted) {
     result.add(_postedConfirmationText());
   }
+  else if (!posted && !postingIO){
+    result.add(_postItemButton(huntItem.huntName, foundImage, user));
+  }
+  else result.add(BareLoading());
 
   return result;
 }
@@ -294,7 +298,10 @@ Widget _postItemButton( String huntName, image, user) {
         fontSize: 20),
     ),
     onPressed: () async { 
-      await DatabaseService(uid: user.uid, user: user).createPost(huntName, image);
+      setState(() {
+        postingIO = true;
+      });
+      var postResult = await DatabaseService(uid: user.uid, user: user).createPost(huntName, image);
       setState(() {
         posted = true;
       });

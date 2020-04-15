@@ -62,7 +62,7 @@ class BaseDrawer extends StatelessWidget {
                 fontSize: 25,
               ),
             ),
-            accountEmail: Text("Placeholder email.com"),
+            accountEmail: Text(""),
             decoration: BoxDecoration(
                 image: DecorationImage(
                     image: AssetImage("assets/images/drawer_background.jpg"), fit: BoxFit.cover)
