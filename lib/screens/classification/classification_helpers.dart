@@ -21,7 +21,10 @@ class ClassificationHelpers {
       print('Updated the Game score on Firebase');
       HuntItem huntItem = HuntItem(
                                 huntName: huntMapItem['HuntName'], description: huntMapItem['Description'], 
-                                hint: huntMapItem['Hints'], huntImage: huntMapItem['HuntImage']);
+                                hint: huntMapItem['Hints'], huntImage: huntMapItem['HuntImage'], rarityScore: huntMapItem['RarityScore'],
+                                carbonHungry: huntMapItem['CarbonHungry?'], endemic: huntMapItem['Endemic?'], decomposer: huntMapItem['Decomposer?'],
+                                predator: huntMapItem['Predator?'], scavenger: huntMapItem['Scavenger?']
+                                );
       Navigator.push(context, MaterialPageRoute(builder: (context) => HuntScreen(huntItem : huntItem, foundImage: image,)));
     } else {
       showAlertDialog(context, user, predictedClass, image, findStatus);

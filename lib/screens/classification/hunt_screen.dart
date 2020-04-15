@@ -36,13 +36,15 @@ class _HuntScreenState extends State<HuntScreen> {
         .addPostFrameCallback((_) => displayOverlay(context));
   }
 
-  void getAchievements(User user) async {
+  Future getAchievements(User user) async {
+    print ('got achievements');
     List<String> achievementsList = await AchievementsUpdater().updateFoundItem(widget.huntItem.huntName, user);
+
     setState(() {
       newAchievements = achievementsList;
+      // newAchievements = ['Miwok Home Maker'];
       _overlayEntry = newAchievements.isNotEmpty ? createOverlay(newAchievements[0]) : null;
     });
-
   }
 
 
@@ -50,13 +52,18 @@ class _HuntScreenState extends State<HuntScreen> {
     return Image.asset(assetPath, height: height,);
   }
 
-  void displayOverlay(BuildContext context){
+  void displayOverlay(BuildContext context) async {
+    final user = Provider.of<User>(context);
+    await getAchievements(user);
+    print(_overlayEntry != null);
     if (_overlayEntry != null){
+      print('overlaying content');
       Overlay.of(context).insert(_overlayEntry);
     }
   }
   
   OverlayEntry createOverlay(achievementName){ 
+    print("running...");
     Map achievement = Achievements.achievementsMap[achievementName];
     return OverlayEntry(
     builder: (BuildContext context) => GestureDetector(
@@ -67,15 +74,26 @@ class _HuntScreenState extends State<HuntScreen> {
               alignment: Alignment.center,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.teal[300],
-                  border: Border.all(color: Colors.teal[400], width: 3.0)),
-                margin: EdgeInsets.symmetric(horizontal:50.0, vertical: 100),
+                  color: Styles.appBarStyle,
+                  border: Border.all(color: Colors.brown, width: 3.0)),
+                margin: EdgeInsets.symmetric(horizontal:30.0, vertical: 100),
                 padding: EdgeInsets.symmetric(horizontal:5.0, vertical:5.0),
                 child: Column(
                   children: <Widget>[
                     Container(
                       margin: EdgeInsets.only(top: 3.0, bottom: 3.0),
-                      child: Text("${achievement['AchievementName']} Unlocked",
+                      child: Text("Achievement Unlocked!",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold
+                      ),
+                      ),
+                    ),
+                    Divider(color: Colors.white24,),
+                    Container(
+                      margin: EdgeInsets.only(top: 3.0, bottom: 3.0),
+                      child: Text("${achievement['AchievementName']}",
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18.0,
@@ -83,11 +101,12 @@ class _HuntScreenState extends State<HuntScreen> {
                       ),
                       ),
                     ),
-                    _pictureIcon(achievement['Image'], height: 100.0),
+                    _pictureIcon(achievement['Image'], height: 150.0),
                     SizedBox(height: 10.0),
                     SizedBox(height: 10.0),
+                    Divider(color: Colors.white24, indent:10.0, endIndent: 10.0,),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 4.0),
+                      margin: EdgeInsets.symmetric(horizontal: 20.0),
                       child: Text(achievement['AchievementText'],
                       style: TextStyle(
                         color: Colors.white,
@@ -108,43 +127,56 @@ class _HuntScreenState extends State<HuntScreen> {
   @override
   Widget build(BuildContext context) {
 
-    final user = Provider.of<User>(context);
-    getAchievements(user);
-
     //print(newAchievements);
+    final user = Provider.of<User>(context);
 
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(widget.huntItem.huntName),
-        backgroundColor: Styles.appBarStyle,
-        ),
-      body: Container(
-        margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 5.0),
-        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-        decoration: BoxDecoration(
-          color: Colors.brown[400],
-          border: Border.all(
-            color: Colors.teal[400],
-            width: 2.0
+      backgroundColor: Colors.grey,
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 240.0,
+            floating: false,
+            pinned: true,
+            backgroundColor: Styles.appBarStyle,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Image.asset(widget.huntItem.huntImage, fit: BoxFit.cover),
+              title: Text(widget.huntItem.huntName),
             ),
           ),
-        child: Column(
-          children: _renderFacts(context, widget.huntItem, user, widget.foundImage),
-          ),
-        ),
-    );
+          SliverFillRemaining(
+            child: Container(
+              margin: EdgeInsets.symmetric(horizontal:10.0, vertical: 5.0),
+              padding: EdgeInsets.symmetric(horizontal:10.0, vertical: 2.0),
+              decoration: BoxDecoration(
+                //border: Border.all(color: Styles.appBarStyle),
+                boxShadow: [
+                      BoxShadow(
+                        color: Colors.brown,
+                        blurRadius: 1.0,
+                      ),
+                    ]
+                ),
+              child: Column(
+                children: _renderFacts(context, widget.huntItem, user, widget.foundImage),
+              ),
+            ),
+          )
+        ],
+      ),
+      );
   }
 
 List<Widget> _renderFacts (BuildContext context, HuntItem huntItem, user, foundImage) {
   var result = List<Widget>();
-  result.add(_bannerImage(huntItem.huntImage ?? Constants.huntPlaceholderImage , 180));
+  //result.add(_bannerImage(huntItem.huntImage ?? Constants.huntPlaceholderImage , 180));
   result.add(_sectionTitle('Description'));
+  result.add(Divider(color: Colors.white24));
   result.add(_sectionText(huntItem.description));
   //result.add(_sectionTitle('Hint'));
   result.add(_sectionText(huntItem.hint));
-  result.add(SizedBox(height: 10.0));
+  result.add(SizedBox(height: 20.0));
 
   if (!posted){
     result.add(_postItemButton(huntItem.huntName, foundImage, user));
@@ -174,7 +206,7 @@ Widget _sectionText(String text){
   return Text(text,
           style: TextStyle(
             color: Colors.white,
-            fontSize: 18.0
+            fontSize: 18.0,
             )
           );
 }
@@ -189,7 +221,7 @@ Widget _bannerImage( String imageFile, double height){
 Widget _postItemButton( String huntName, image, user) {
 
   return FlatButton.icon(
-    color: Colors.teal[400],
+    color: Styles.buttonColor,
     icon: Icon(Icons.share, color: Colors.white,),
     label: Text('Share Finding',
       style: TextStyle(

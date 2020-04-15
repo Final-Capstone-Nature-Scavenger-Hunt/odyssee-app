@@ -47,4 +47,6 @@ class Styles {
     fontSize: 25.0,
     color: _textColorStrong,
   );
+
+  static final buttonColor = Color(0xEF615F5F);
 }
