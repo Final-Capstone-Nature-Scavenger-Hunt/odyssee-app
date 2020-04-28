@@ -235,7 +235,7 @@ class _GameMapState extends State<GameMap> {
     );
     }
 
-  void chooseTrail(BuildContext context, mapController){
+  void chooseTrail(BuildContext context, GoogleMapController controller){
     Widget okButton = FlatButton(
       child: Text("CANCEL"),
       onPressed: () => Navigator.of(context, rootNavigator: true).pop('dialog'),
@@ -245,7 +245,9 @@ class _GameMapState extends State<GameMap> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Select a Trail"),
-        content: ListView.builder(
+        content: SizedBox(
+          height: 100.0,
+          child: ListView.builder(
                   itemCount: TrailData.trailMap.keys.length,
                   itemBuilder: (BuildContext context, int index){
                     String trail = TrailData.trailMap.keys.toList()[index];
@@ -256,13 +258,14 @@ class _GameMapState extends State<GameMap> {
                       trailing: Text(difficulty,
                           style: TextStyle(color: Colors.grey[350], fontSize: 15.0 )),
                       onTap: () { 
-                        _onChangeTrail(trail, mapController);
+                        _onChangeTrail(trail, controller);
                         Navigator.of(context).pop();
                         },
                       );
                   },
                   shrinkWrap: true,
                 ),
+        ),
         actions: <Widget>[ okButton],
         elevation: 24.0,
         ),
@@ -405,9 +408,7 @@ class _GameMapState extends State<GameMap> {
               children: <Widget>[
                 FlatButton.icon(
                   label:Text(''),
-                  onPressed: () {
-                    chooseTrail(context, mapController);
-                  },
+                  onPressed: () => chooseTrail(context, mapController),
                   //tooltip: 'Choose a Trail',
                   icon: Icon(Icons.map),
                   //heroTag: null,
