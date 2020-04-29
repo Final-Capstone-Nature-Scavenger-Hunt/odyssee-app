@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -236,6 +236,21 @@ class _GameMapState extends State<GameMap> {
     }
 
   void chooseTrail(BuildContext context, GoogleMapController controller){
+    //sort trails by distance to trailhead
+    var trails = TrailData.trailMap.keys.toList();
+    List<LatLng> trailheads = trails.map((trail) => LatLng(TrailData.trailMap[trail]['points'][0][0], TrailData.trailMap[trail]['points'][0][1])).toList();
+    Map<String, double> trailDistances = new Map();
+    for (var i = 0; i < trails.length; i++) {
+      trailDistances[trails[i]] = MapHelpers.calcDistance(currentLatLng, trailheads[i]);
+    }
+    var sortedKeys = trailDistances.keys.toList(growable:false)
+      ..sort((k1, k2) => trailDistances[k1].compareTo(trailDistances[k2]));
+    LinkedHashMap sortedTrails = new LinkedHashMap
+        .fromIterable(sortedKeys, key: (k) => k, value: (k) => trailDistances[k]);
+    print(sortedTrails);
+    var sortedTrailsList = sortedTrails.keys.toList();
+    print(sortedTrailsList);
+
     Widget okButton = FlatButton(
       child: Text("CANCEL"),
       onPressed: () => Navigator.of(context, rootNavigator: true).pop('dialog'),
@@ -245,26 +260,61 @@ class _GameMapState extends State<GameMap> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Select a Trail"),
-        content: SizedBox(
-          height: 100.0,
-          child: ListView.builder(
-                  itemCount: TrailData.trailMap.keys.length,
-                  itemBuilder: (BuildContext context, int index){
-                    String trail = TrailData.trailMap.keys.toList()[index];
-                    String difficulty = TrailData.trailMap[trail]['difficulty'] ?? "Easy";
-
-                    return ListTile(
-                      title: Text(trail),
-                      trailing: Text(difficulty,
-                          style: TextStyle(color: Colors.grey[350], fontSize: 15.0 )),
-                      onTap: () { 
-                        _onChangeTrail(trail, controller);
-                        Navigator.of(context).pop();
-                        },
-                      );
-                  },
-                  shrinkWrap: true,
+        content: new Column(
+          children:
+          <Widget>[
+              SizedBox(
+                height: 60.0,
+                child: ListTile(
+                  title: Text("Trail Name"),
+                  subtitle: Text("Climate(s)"),
+                  trailing: Wrap(
+                    children: <Widget>[
+                      Text("Trail Type /\n Difficulty")
+                    ],
+                  ),
                 ),
+              ),
+            Divider(color: Colors.black,),
+            Expanded(
+//              flex: 2,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width * 1.0,
+                height: 150.0,
+                child: ListView.builder(
+                        itemCount: sortedTrailsList.length,
+                        itemBuilder: (BuildContext context, int index){
+
+                          String trail = sortedTrailsList[index];
+//                          String difficulty = TrailData.trailMap[trail]['difficulty'] ?? "Easy";
+
+                          return ListTile(
+                            title: Text(trail),
+                            trailing: Wrap(
+                              children: <Widget>[
+                                Image.asset("assets/icons/"
+                                    + TrailData.trailMap[trail]['type'] + "_"
+                                    + TrailData.trailMap[trail]['difficulty'] + ".png",
+                                  scale: 20,),
+
+                             ],
+                            ),
+                            subtitle: Text(TrailData.trailMap[trail]['climate'],
+                              style: TextStyle(
+                                fontSize: 11,
+                              ),
+                            ),
+                            onTap: () {
+                              _onChangeTrail(trail, controller);
+                              Navigator.of(context).pop();
+                              },
+                            );
+                        },
+                        shrinkWrap: true,
+                      ),
+              ),
+            ),
+          ],
         ),
         actions: <Widget>[ okButton],
         elevation: 24.0,
