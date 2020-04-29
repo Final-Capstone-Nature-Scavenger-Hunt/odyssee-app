@@ -261,8 +261,7 @@ class _GameMapState extends State<GameMap> {
       builder: (context) => AlertDialog(
         title: Text("Select a Trail"),
         content: new Column(
-          children:
-          <Widget>[
+          children: <Widget>[
               SizedBox(
                 height: 60.0,
                 child: ListTile(
@@ -329,8 +328,13 @@ class _GameMapState extends State<GameMap> {
       onPressed: () => Navigator.of(context, rootNavigator: true).pop('dialog'),
     );
 
-    Widget dialogContent = species.isEmpty ? Text('Please select a Trail first') : 
-                    ListView.builder(
+    Widget dialogContent = species.isEmpty ? Text('Please select a Trail first') :
+                  new Column(
+                    children: <Widget>[Expanded(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 1.0,
+                      height: 150.0,
+                      child: ListView.builder(
                   itemCount: species.length,
                   itemBuilder: (BuildContext context, int index){
                     String currentSpecies = species[index];
@@ -341,7 +345,7 @@ class _GameMapState extends State<GameMap> {
                       title: Text(currentSpecies),
                       trailing: Text(difficulty,
                           style: TextStyle(color: Colors.grey[350], fontSize: 15.0 )),
-                      onTap: () { 
+                      onTap: () {
                           setState(() {
                             selectedSpecies = currentSpecies;
                           });
@@ -350,8 +354,11 @@ class _GameMapState extends State<GameMap> {
                       );
                   },
                   shrinkWrap: true,
-                );
-
+                ),
+              ),
+            ),
+           ],
+          );
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
