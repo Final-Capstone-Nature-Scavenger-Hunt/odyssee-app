@@ -20,7 +20,7 @@ class OdysseeWebExplorerState extends State<OdysseeWebExplorer> {
       ),
       drawer: BaseDrawer(),
       body: WebView(
-        initialUrl: "https://odyssee-nature.github.io/#",
+        initialUrl: "https://vimeo.com/408200308",
         onWebViewCreated: (WebViewController webViewController) {
           _controller.complete(webViewController);
         },
@@ -46,7 +46,7 @@ class PlayWebExplorerState extends State<PlayWebExplorer> {
       ),
       drawer: BaseDrawer(),
       body: WebView(
-        initialUrl: "https://odyssee-nature.github.io/#intro",
+        initialUrl: "https://odyssee-nature.github.io/#",
         onWebViewCreated: (WebViewController webViewController) {
           _controller.complete(webViewController);
         },
