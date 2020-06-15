@@ -1,89 +1,154 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:odyssee/data/user_images.dart';
 import 'package:odyssee/models/post.dart';
+import 'package:odyssee/shared/loading.dart';
 import 'package:odyssee/shared/styles.dart';
 
-class FeedItem extends StatelessWidget {
 
-  Post post;
+class FeedItem extends StatefulWidget {
+
+  final post;
 
   FeedItem({this.post});
   
   @override
-  Widget build(BuildContext context) {
-  
-  final Widget imageContainer = post.imagePath == null ? SizedBox(height: 1.0,) : Container(
-  constraints : BoxConstraints.tightFor(height:100),
-  child : Image.network(post.imagePath ,fit: BoxFit.fitWidth)
-  );
+  _FeedItemState createState() => _FeedItemState();
+}
 
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Post'),
-      backgroundColor: Styles.appBarStyle,
-      ),
-    body: Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
-      child:Card(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              leading: _itemThumbNail(post),
-              title: Text(
-                post.owner,
-                style: TextStyle(fontWeight: FontWeight.bold)
-                ),
-              subtitle: Text(
-                post.message,
-                style: TextStyle(
-                  color: Colors.grey[600] 
-                )
+class _FeedItemState extends State<FeedItem> {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        children: <Widget>[
+          ListTile(
+            leading: Container(
+              child: CircleAvatar(
+                backgroundImage: _itemThumbNail(widget.post)
+              )
+            ),
+            title: Text(
+              widget.post.postName,
+              style: TextStyle(
+                fontFamily: 'Quicksand',
+                fontWeight: FontWeight.bold,
+                fontSize: 18.0
               ),
             ),
+          ),
+          Center(
+            child: _imageContainer(widget.post),
+          ),
+          displayButtons()
+        ]
+      ),
+      );
+  }
 
-            imageContainer,
+  // OverlayEntry createPictureOverlay(){
+  //   return OverlayEntry(
+  //     builder: (BuildContext context){
+  //       return Container(
+  //         height: 300,
+  //         //width: 150
+  //         margin: EdgeInsets.only( bottom: 20.0),
+  //         decoration: BoxDecoration(
+  //         ),
+  //         child: Image.network('assets/rep_images/${widget.post.postImage}', 
+  //         fit: BoxFit.fitHeight,
+  //               )
+  //       );
+  //     }
+  //   );
+  // }
 
-            ButtonBar(
-              children: <Widget>[
-                FlatButton(
-                  child: Icon(Icons.thumb_up),
-                  onPressed: () { /* ... */ },
-                ),
-                FlatButton(
-                  child: Text('COMMENT'),
-                  onPressed: () { /* ... */ },
-                ),
-                FlatButton(
-                  child: Text('REPOST'),
-                  onPressed: () { /* ... */ },
-                ),
-              ]
+  Widget displayButtons(){
+    return ButtonBar(
+          children: <Widget>[
+            FlatButton(
+              child: Icon(Icons.thumb_up),
+              onPressed: () { /* ... */ },
             ),
+            FlatButton(
+              child: Text('COMMENT',
+                style: Styles.defaultTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0
+                )
+              ),
+              onPressed: () { /* ... */ },
+            ),
+            FlatButton(
+              child: Text('REPOST',
+                style: Styles.defaultTextStyle.copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16.0
+                )
+              ),
+              onPressed: () { /* ... */ },
+            ),
+          ]
+        );
+  }
 
-            ButtonBar(
-              children: <Widget>[
-                FlatButton(
-                  child: Text('${post.numLikes} Likes'),
-                  onPressed: (){ /* ... */ },
+  ImageProvider _itemThumbNail(Post post){
+    String postImage;
+    String postName = post.owner;
+
+    if (postName.toLowerCase().contains('brian')){
+      postImage = UserImages.imageLinks['brian'];
+    }
+    else if (postName.toLowerCase().contains('tucker')){
+      postImage = UserImages.imageLinks['tucker'];
+    }
+    else if (postName.toLowerCase().contains('gordon')){
+      postImage = UserImages.imageLinks['gordon'];
+    }
+    else if (postName.toLowerCase().contains('deb')){
+      postImage = UserImages.imageLinks['debalina'];
+    }
+    else if (postName.toLowerCase().contains('tree')){
+      postImage = UserImages.imageLinks['tree'];
+    }
+    else {
+      postImage = UserImages.imageLinks['default'];
+    }
+    return NetworkImage(postImage);
+  }
+
+  Future _getFirebaseImageURL (String storagePath) async {
+    final ref = FirebaseStorage.instance.ref().child(storagePath);
+    return await ref.getDownloadURL();
+  }
+
+  Widget _imageContainer (Post post){
+    return FutureBuilder(
+      future: _getFirebaseImageURL(post.imagePath),
+      builder: (context, snapshot){
+        if (snapshot.connectionState == ConnectionState.none && snapshot.hasData == null){
+          return Loading();
+        } else if (snapshot.hasError){
+          return Text('Error Loading data');
+        }else if (snapshot.hasData){
+          return Container(
+                  height: 150,
+                  width: 150,
+                  margin: EdgeInsets.only( bottom:20.0),
+                  decoration: BoxDecoration(
                   ),
-                FlatButton(
-                  child: Text('${post.numComments} Coments'),
-                  onPressed: (){ /* ... */ },
+                  child: ClipRRect(
+                          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                          child: Image.network('${post.imagePath}', 
+                          fit: BoxFit.fitHeight,
+                        ),
                   )
-              ],
-            )
-          ],
-        ),
-      )
-    ),
-  );
-  }
-
-  Widget _itemThumbNail(Post post){
-    return Container(
-      child: CircleAvatar(
-        backgroundImage: NetworkImage(post.ownerImageLink) )
-    );
-  }
-
+                );
+        } else if (snapshot.connectionState == ConnectionState.waiting && snapshot.hasData == null){
+          return Loading();
+        }
+        else return Container();
+      }
+      );
+  } 
 }

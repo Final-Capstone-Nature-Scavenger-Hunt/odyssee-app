@@ -49,4 +49,15 @@ class Styles {
   );
 
   static final buttonColor = Color(0xEF615F5F);
+
+  
+  static final defaultTextStyle = TextStyle(
+                                      fontFamily: 'Cabin');
+
+  static final defaultPageTitle = TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 25.0,
+                                    fontFamily: 'Cabin',
+                                    //fontWeight: FontWeight.bold
+                                    );
 }

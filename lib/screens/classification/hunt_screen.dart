@@ -131,104 +131,88 @@ class _HuntScreenState extends State<HuntScreen> {
 
     final user = Provider.of<User>(context);
 
-
-    return Scaffold(
-      backgroundColor: Colors.grey,
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            expandedHeight: 240.0,
-            floating: false,
-            pinned: true,
-            backgroundColor: Styles.appBarStyle,
-            flexibleSpace: FlexibleSpaceBar(
-              background: Image.asset(widget.huntItem.huntImage, fit: BoxFit.cover),
-              title: Text(widget.huntItem.huntName),
+return Scaffold(
+      backgroundColor: Colors.brown[100], //Color(0xFF21BFBD),
+      body: ListView(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(top:15.0, left: 10.0),
+            child: Row(
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                Text(widget.huntItem.huntName,
+                  style: Styles.defaultPageTitle
+                )
+              ]
+            )
+          ),
+          Container(
+            height: 200,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(widget.huntItem.huntImage)
+              )
             ),
           ),
-          SliverFillRemaining(
+          Padding(
+            padding: EdgeInsets.only(top:15.0, left:20.0, right: 20.0),
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal:10.0, vertical: 5.0),
-              padding: EdgeInsets.symmetric(horizontal:10.0, vertical: 2.0),
+              height: 150,
+              padding: EdgeInsets.only(top:10.0),
               decoration: BoxDecoration(
-                //border: Border.all(color: Styles.appBarStyle),
+                color: Colors.white,
+
+                borderRadius: BorderRadius.circular(10.0),
                 boxShadow: [
-                      BoxShadow(
-                        color: Colors.brown,
-                        blurRadius: 1.0,
-                      ),
-                    ]
-                ),
-              child: Column(
-                children: _renderFacts(context, widget.huntItem, user, widget.foundImage),
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 2.0
+                  )
+                ]
               ),
-            ),
+              child: ListView(
+                children: <Widget>[
+                  Row(children: <Widget>[
+                    Expanded(
+                      child: createDescription(widget.huntItem.description)
+                    ),
+                    SizedBox(height: 5.0),
+                  ],
+                  )
+                ],
+              )
+            )
+          ),
+          SizedBox(height: 5.0),
+          Divider( 
+            color: Colors.grey, 
+            thickness: 1.0, 
+            indent: 10.0,
+            endIndent: 10.0,),
+          SizedBox(height: 5.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: _addHuntDetails(widget.huntItem),
+          ),
+          SizedBox(height: 10.0),
+          Center(
+            child: _postItemButton(widget.huntItem.huntName, widget.foundImage, user),
           )
-        ],
-      ),
-      );
-  }
-
-List<Widget> _renderFacts (BuildContext context, HuntItem huntItem, user, foundImage) {
-  var result = List<Widget>();
-  //result.add(_bannerImage(huntItem.huntImage ?? Constants.huntPlaceholderImage , 180));
-  result.add(_sectionTitle('Description'));
-  result.add(Divider(color: Colors.white24));
-  result.add(_sectionText(huntItem.description));
-  //result.add(_sectionTitle('Hint'));
-  result.add(_sectionText(huntItem.hint));
-  result.add(SizedBox(height: 20.0));
-  result.add(_addHuntDetails(huntItem));
-  result.add(SizedBox(height: 10.0));
-
-  if (posted) {
-    result.add(_postedConfirmationText());
-  }
-  else if (!posted && !postingIO){
-    result.add(_postItemButton(huntItem.huntName, foundImage, user));
-  }
-  else result.add(BareLoading());
-
-  return result;
-}
-
-  Widget _sectionTitle(String text){
-    return Container(
-      padding: EdgeInsets.fromLTRB(25.0, 25.0, 25.0, 10.0),
-      child: Text(text,
-      textAlign : TextAlign.left,
-      style : TextStyle(
-        color: Colors.white,
-        fontSize: 25.0,
-        fontFamily: 'Muli',
-        fontWeight: FontWeight.bold
-        )
-    )
+        ]
+      )
     );
   }
 
-Widget _sectionText(String text){
-  return Text(text,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18.0,
-            )
-          );
-}
 
-Widget _bannerImage( String imageFile, double height){
-  return Container(
-    constraints : BoxConstraints.tightFor(height:height),
-    child : Image.asset(imageFile, fit: BoxFit.fitWidth)
-  );
-}
-
-Widget _addHuntDetails(HuntItem huntItem){
+List<Widget> _addHuntDetails(HuntItem huntItem){
   List<Widget> rowChildren = [];
 
-  rowChildren.add(
-    detailsIcon('Rarity Score', value: huntItem.rarityScore.toString())
-  );
+  // rowChildren.add(
+  //   detailsIcon('Rarity Score', value: huntItem.rarityScore.toString())
+  // );
 
   if (huntItem.carbonHungry==1.0){
     rowChildren.add(detailsIcon("Carbon Hungry"));
@@ -245,87 +229,101 @@ Widget _addHuntDetails(HuntItem huntItem){
   if (huntItem.scavenger==1.0){
     rowChildren.add(detailsIcon("Scavenger"));
   }
-  return Container(
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: rowChildren,
-    ),
-  );
+  return rowChildren;
 }
 
-Widget detailsIcon(String detailText, {String value ="Yes"}){
-  return Container(
-    padding: EdgeInsets.symmetric(horizontal:1.0),
-    decoration: BoxDecoration(
-      color: detailColor(detailText),
-      border: Border.all(
-      color: detailColor(detailText),
-    ),
-    borderRadius: BorderRadius.all(Radius.circular(20))
-  
-    ),
-    child: Text("$detailText: $value",
-      style: TextStyle(
-        //backgroundColor: detailColor(detailText),
-        fontSize: 14.0,
-        color: Colors.white,
-        fontWeight: FontWeight.bold
-        ),
-    ),
-  );
-}
-
-Color detailColor(String detailText){
-  switch (detailText){
-    case 'Carbon Hungry': return Colors.black;
-    case 'Endemic': return Colors.green;
-    case 'Decomposer': return Colors.brown;
-    case 'Predator': return Colors.red[400];
-    case 'Scavenger': return Colors.grey;
-    case 'Rarity Score': return Colors.yellow[800];
-    default: return Colors.blue;
+  Widget detailsIcon(String detailText){
+    return createPropertyBanner( detailText, Icons.battery_alert);
   }
-}
 
-Widget _postItemButton( String huntName, image, user) {
+  Widget _postItemButton( String huntName, image, user) {
 
-  return FlatButton.icon(
-    color: Styles.buttonColor,
-    icon: Icon(Icons.share, color: Colors.white,),
-    label: Text('Share Finding',
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 20),
-    ),
-    onPressed: () async { 
-      setState(() {
-        postingIO = true;
-      });
-      var postResult = await DatabaseService(uid: user.uid, user: user).createPost(huntName, image);
-      setState(() {
-        posted = true;
-      });
-      }
-  );
-}
+    Widget buttonText;
 
-Widget _postedConfirmationText() {
-  return FlatButton.icon(
-    onPressed: (){},
-    icon: Icon(Icons.check, color: Colors.white),
-    label: Text(
-      'Posted',
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 20)
+    if (posted) {
+      buttonText = Text('Posted',
+                    style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0
+                    )
+                  );
+    }
+    else if (!posted && !postingIO){
+      buttonText = Text('Share Finding',
+                    style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20.0
+                    )
+                  );
+    }
+    else buttonText = BareLoading();
+
+    return RaisedButton(
+                color: Colors.teal,
+                onPressed: () async { 
+                  setState(() {
+                    postingIO = true;
+                  });
+                  var postResult = await DatabaseService(uid: user.uid, user: user).createPost(huntName, image);
+                  setState(() {
+                    posted = true;
+                  });
+                  },
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                  side: BorderSide(color: Colors.white),
+                ),
+                child: buttonText,
+              );
+  }
+
+
+  Widget createDescription(String description){
+    return Row(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.0, vertical:10.0),
+          child: Icon(Icons.info_outline, size: 40.0),
+        ),
+        Expanded(
+            child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10.0, vertical:10.0),
+            child: Text(description,
+              style: Styles.defaultTextStyle.copyWith(
+                fontSize: 16.0
+              ),
+            )
+          ),
+        )
+      ]
+    );
+  }
+
+  Widget createPropertyBanner(String property, icon){
+    return Container(
+      height: 80.0,
+      width: 80.0,
+      margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 3.0),
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.black,
+          width: 2.0,
+          style: BorderStyle.solid
+        ),
+        borderRadius: BorderRadius.circular(10.0)
       ),
-    shape: new RoundedRectangleBorder(
-      side: BorderSide(
-            color: Colors.blue,
-            width: 1,
-            style: BorderStyle.solid
-          ), 
-      borderRadius: new BorderRadius.circular(30.0)),
-  );
-}
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Icon(icon, size: 40.0),
+          Text(property.toUpperCase(),
+            style: Styles.defaultTextStyle.copyWith(
+              fontWeight: FontWeight.bold
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 }

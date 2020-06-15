@@ -84,3 +84,12 @@ flutter:
     - family: BOTW
       fonts:
         - asset: fonts/BOTW.ttf
+    - family: Montserrat
+      fonts:
+        - asset: assets/fonts/Montserrat-Regular.ttf
+    - family: Quicksand
+      fonts:
+        - asset: assets/fonts/Quicksand-VariableFont_wght.ttf
+    - family: Cabin
+      fonts:
+        - asset: assets/fonts/Cabin-Regular.ttf

@@ -125,39 +125,17 @@ class _ClassifyImageState extends State<ClassifyImage> {
     final user = Provider.of<User>(context);
     final huntNames = HuntData.huntMap.keys.toList();
 
-    List<Widget> belowImageWidgets = [
-
-      FlatButton(
-        child: Text('Confirm Image',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0
-                  )
-                  ),
-        onPressed: () =>  ClassificationHelpers().confirmClassification(context, user, _recognitions, 
-                                                                      widget.predictedClass, findStatus, _image),
-        color: Styles.buttonColor
+    stackChildren.add(
+      Container(
+        height: 300,
+        margin: EdgeInsets.symmetric(vertical: 10.0, horizontal:20.0),
+        child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                child: _image == null ? Text('No image selected.') : Image.file(_image, fit: BoxFit.fitWidth),
         )
-    ];
 
-    stackChildren.add(Center(
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Constants.defaultBackgroudColor
-              ),
-              color: Colors.white
-            ),
-            child: _image == null ? Text('No image selected.') : Image.file(_image),
-            alignment: Alignment.center,
-            height: size.height * 0.7,
-            width: size.width * 0.85,
-            )
-        ]..addAll(belowImageWidgets),
       ),
-    ));
+    );
 
 
     if (_busy) {
@@ -166,7 +144,6 @@ class _ClassifyImageState extends State<ClassifyImage> {
         opacity: 0.3,
       ));
       stackChildren.add(
-        
         SpinKitChasingDots(
           color: Colors.brown,
           size: 50.0
@@ -175,55 +152,146 @@ class _ClassifyImageState extends State<ClassifyImage> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: Text('Image Classification'),
-        centerTitle: true,
-        backgroundColor: Color(0xFF194000),
-        elevation: 0.0,
-        iconTheme: IconThemeData(
-          color: Color(0xFFE86935),
-        ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-          color: Constants.defaultBackgroudColor,
-          width: 3.0
-            ),
-            color: Colors.white
-        ),
-        margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-        padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 5.0),
-        child: Stack(
-          children: stackChildren,
-        ),
-      ),
-      floatingActionButton: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
+      backgroundColor: Colors.brown[100],
+      body: ListView(
         children: <Widget>[
-          FloatingActionButton(
-            backgroundColor: Colors.brown,
-            onPressed: () async {
-              predictImagePicker(user.uid, false );
-            },
-            tooltip: 'Pick Image from Gallery',
-            child: Icon(Icons.image),
-            heroTag: null,
+          Padding(
+            padding: EdgeInsets.only(top:15.0, left: 10.0),
+            child: Row(
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                Text('Select Image',
+                  style: Styles.defaultPageTitle
+                )
+              ]
+            )
           ),
-          SizedBox(height: 5.0),
-          FloatingActionButton(
-            backgroundColor: Colors.brown,
-            onPressed: () async {
-              predictImagePicker(user.uid, true);
-            },
-            tooltip: 'Pick Image from Camera',
-            child: Icon(Icons.camera),
-            heroTag: null,
+
+          SizedBox(height: 10.0),
+
+          Stack(
+            children: stackChildren
           ),
+
+          SizedBox(height: 10.0),
+
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                RaisedButton(
+                  color: Colors.green[900],
+                  onPressed: () async {
+                    predictImagePicker(user.uid, false );
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                    side: BorderSide(color: Colors.white),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.photo_library, color: Colors.white),
+                      SizedBox(width: 5.0),
+                      Text('Gallery',
+                        style: Styles.defaultTextStyle.copyWith(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold
+                          ),
+                      ),
+                    ],
+                  ),
+                ),
+                RaisedButton(
+                  color: Colors.green[900],
+                  onPressed: () async {
+                    predictImagePicker(user.uid, true );
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                    side: BorderSide(color: Colors.white),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Icon(Icons.camera_alt, color: Colors.white),
+                      SizedBox(width: 5.0),
+                      Text('Camera',
+                        style: Styles.defaultTextStyle.copyWith(
+                          color: Colors.white,
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold
+                          ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+
+          Divider(height: 10.0, 
+            color: Colors.black,
+            indent: 30.0,
+            endIndent: 30.0,
+          ),
+
+        Center(
+          child: Column(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.only(top:10.0),
+                height: 50,
+                width: 250,
+                child: RaisedButton(
+                    color: Colors.green[900],
+                    onPressed: () => ClassificationHelpers().confirmClassification(context, user, _recognitions, 
+                                                                      widget.predictedClass, findStatus, _image),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      side: BorderSide(color: Colors.white),
+                    ),
+                    child: Text('Confirm Finding',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25.0,
+                            fontFamily: 'Quicksand',
+                            fontWeight: FontWeight.bold
+                          ),
+                    )
+                ),
+              ),
+              SizedBox(height:10.0),
+              Container(
+                margin: EdgeInsets.only(top:10.0),
+                height: 50,
+                width: 250,
+                child: RaisedButton(
+                    color: Colors.white,
+                    onPressed: () => Navigator.of(context).pop(),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                      side: BorderSide(color: Colors.black38),
+                    ),
+                    child: Text('Cancel',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 25.0,
+                            fontFamily: 'Quicksand',
+                            fontWeight: FontWeight.bold
+                          ),
+                    )
+                ),
+              ),
+            ],
+          ),
+        )
+
         ],
-      )
+      ),
     );
 
   }

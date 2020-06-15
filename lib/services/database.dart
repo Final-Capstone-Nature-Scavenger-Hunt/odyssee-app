@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:odyssee/models/game.dart';
+import 'package:odyssee/models/hunt_item.dart';
 import 'package:odyssee/models/post.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:odyssee/services/storage.dart';
@@ -120,7 +121,7 @@ class DatabaseService {
             var userModel = User(
               uid: doc.data['user']['uid'],
               displayName: doc.data['user']['displayName'] ?? "Not Set",
-              photoURL: doc.data['user']['photURL'] ?? "https://react.semantic-ui.com/images/avatar/small/helen.jpg",
+              photoURL: doc.data['user']['photoURL'] ?? "https://react.semantic-ui.com/images/avatar/small/helen.jpg",
               actionState: doc.data['users'].contains(uid) ? 'Followed' : 'Not Followed'
             );
 
@@ -165,9 +166,15 @@ class DatabaseService {
   //   return achievementsCollection.snapshots().map(_gameDataFromFirebase);
   // }
 
-    Stream<DocumentSnapshot> get userGameData {
+  Stream<DocumentSnapshot> get userGameData {
     final DocumentReference achievementsCollection = Firestore.instance.collection('userGameData').document(uid);
     return achievementsCollection.snapshots();
   }
+
+  Stream<GameData> get rawUserGameData {
+    final DocumentReference achievementsCollection = Firestore.instance.collection('userGameData').document(uid);
+    return achievementsCollection.snapshots().map(_gameDataFromFirebase);
+  }
+  
 
 }

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:odyssee/data/user_images.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:odyssee/screens/achievements/achievements.dart';
-import 'package:odyssee/screens/collection/collection.dart';
-import 'package:odyssee/screens/authenticate/authenticate.dart';
+import 'package:odyssee/screens/collections/collections.dart';
 import 'package:odyssee/screens/social/feed.dart';
 import 'package:odyssee/screens/social/users_to_follow.dart';
 import 'package:odyssee/screens/start/start_menu.dart';
@@ -184,7 +183,7 @@ class BaseDrawer extends StatelessWidget {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Collection()),
+                  MaterialPageRoute(builder: (context) => Collections()),
                 );
               },
             ),

@@ -3,15 +3,14 @@ import 'package:odyssee/models/game.dart';
 import 'package:odyssee/models/user.dart';
 import 'package:odyssee/services/database.dart';
 import 'package:provider/provider.dart';
-import 'achievements_list.dart';
+import 'collections_list.dart';
 
-
-class Achievements extends StatefulWidget {
+class Collections extends StatefulWidget {
   @override
-  _AchievementsState createState() => _AchievementsState();
+  _CollectionsState createState() => _CollectionsState();
 }
 
-class _AchievementsState extends State<Achievements> {
+class _CollectionsState extends State<Collections> {
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +34,7 @@ class _AchievementsState extends State<Achievements> {
                 )
               ),
               flexibleSpace: FlexibleSpaceBar(
-                title: Text('Achievements',
+                title: Text('Collections',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 25.0,
@@ -46,7 +45,7 @@ class _AchievementsState extends State<Achievements> {
               ),
             ),
             
-            AchievementsList()
+            CollectionsList()
 
           ],
         )
